@@ -1,20 +1,13 @@
-package br.com.jmsdevelopment.ecom.model;
+package br.com.jmsdevelopment.ecom.dto.produto;
 
 import java.math.BigDecimal;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Entity
-@Table(name = "PRODUTO")
-public class Produto {
+public class ProdutoDto {
 	private Long id;
 	private String nome;
 	private String descricao;
