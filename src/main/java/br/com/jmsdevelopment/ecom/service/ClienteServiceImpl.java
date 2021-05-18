@@ -27,10 +27,12 @@ public class ClienteServiceImpl implements ClienteService {
 	}
 	
 	@Override
-	public void cadastrarUsuario(ClienteCadastroDto clienteCadastroDto) {
+	public ClienteDto cadastrarUsuario(ClienteCadastroDto clienteCadastroDto) {
 		Cliente cliente = clienteMapper.fromClienteCadastroToModel(clienteCadastroDto);
 		cliente.setId(null);
-		clienteRepository.save(cliente);
+		Cliente clienteSalvo = clienteRepository.save(cliente);
+		
+		return clienteMapper.toClienteDto(clienteSalvo);
 	}
 	
 	@Override

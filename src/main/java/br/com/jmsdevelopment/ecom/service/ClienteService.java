@@ -6,7 +6,7 @@ import br.com.jmsdevelopment.ecom.dto.cliente.ClienteDto;
 
 public interface ClienteService {
 	ClienteDto recuperarClientePorId(Long id);
-	void cadastrarUsuario(ClienteCadastroDto clienteCadastroDto);
+	ClienteDto cadastrarUsuario(ClienteCadastroDto clienteCadastroDto);
 	void atualizarCliente(Long id, ClienteDto clienteDto);
 	void alterarSenha(Long id, ClienteAlteraSenhaDto clienteAlteraSenhaDto);
 }
