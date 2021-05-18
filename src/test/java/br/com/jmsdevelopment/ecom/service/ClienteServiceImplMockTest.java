@@ -1,6 +1,7 @@
 package br.com.jmsdevelopment.ecom.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Optional;
@@ -16,6 +17,7 @@ import org.mockito.MockitoAnnotations;
 import br.com.jmsdevelopment.ecom.builder.ClienteBuilder;
 import br.com.jmsdevelopment.ecom.builder.ClienteDtoBuilder;
 import br.com.jmsdevelopment.ecom.dto.cliente.ClienteAlteraSenhaDto;
+import br.com.jmsdevelopment.ecom.dto.cliente.ClienteCadastroDto;
 import br.com.jmsdevelopment.ecom.dto.cliente.ClienteDto;
 import br.com.jmsdevelopment.ecom.mappers.ClienteMapper;
 import br.com.jmsdevelopment.ecom.model.Cliente;
@@ -65,6 +67,17 @@ class ClienteServiceImplMockTest {
 		ClienteDto clienteRetornado = clienteService.recuperarClientePorId(1L);
 		
 		assertEquals(clienteDto, clienteRetornado);
+	}
+	
+	@Test
+	public void deve_CadastrarClienteComIdNulo_QuandoChamaRepository() {
+		Mockito.when(clienteMapper.fromClienteCadastroToModel(Mockito.any(ClienteCadastroDto.class))).thenReturn(cliente);
+		
+		clienteService.cadastrarUsuario(new ClienteCadastroDto());
+		
+		Mockito.verify(clienteRepository).save(clienteCaptor.capture());
+		
+		assertNull(clienteCaptor.getValue().getId());
 	}
 	
 	@Test
