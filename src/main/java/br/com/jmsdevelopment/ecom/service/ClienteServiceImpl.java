@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import br.com.jmsdevelopment.ecom.dto.cliente.ClienteAlteraSenhaDto;
 import br.com.jmsdevelopment.ecom.dto.cliente.ClienteCadastroDto;
 import br.com.jmsdevelopment.ecom.dto.cliente.ClienteDto;
+import br.com.jmsdevelopment.ecom.helpers.exception.ClienteNaoEncontradoException;
 import br.com.jmsdevelopment.ecom.mappers.ClienteMapper;
 import br.com.jmsdevelopment.ecom.model.Cliente;
 import br.com.jmsdevelopment.ecom.repository.ClienteRepository;
@@ -18,7 +19,7 @@ public class ClienteServiceImpl implements ClienteService {
 	private final ClienteMapper clienteMapper;
 	
 	private Cliente pesquisaPorId(Long id) {
-		return clienteRepository.findById(id).orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+		return clienteRepository.findById(id).orElseThrow(() -> new ClienteNaoEncontradoException());
 	}
 	
 	@Override

@@ -19,6 +19,7 @@ import br.com.jmsdevelopment.ecom.builder.ClienteDtoBuilder;
 import br.com.jmsdevelopment.ecom.dto.cliente.ClienteAlteraSenhaDto;
 import br.com.jmsdevelopment.ecom.dto.cliente.ClienteCadastroDto;
 import br.com.jmsdevelopment.ecom.dto.cliente.ClienteDto;
+import br.com.jmsdevelopment.ecom.helpers.exception.ClienteNaoEncontradoException;
 import br.com.jmsdevelopment.ecom.mappers.ClienteMapper;
 import br.com.jmsdevelopment.ecom.model.Cliente;
 import br.com.jmsdevelopment.ecom.repository.ClienteRepository;
@@ -81,8 +82,8 @@ class ClienteServiceImplMockTest {
 	}
 	
 	@Test
-	public void deve_RetornarRunTimeException_QuandoPesquisaPorIdNaoCadastrado() {
-		assertThrows(RuntimeException.class, () -> clienteService.recuperarClientePorId(2L));
+	public void deve_RetornarClienteNaoEncontradoException_QuandoPesquisaPorIdNaoCadastrado() {
+		assertThrows(ClienteNaoEncontradoException.class, () -> clienteService.recuperarClientePorId(2L));
 	}
 	
 	@Test
