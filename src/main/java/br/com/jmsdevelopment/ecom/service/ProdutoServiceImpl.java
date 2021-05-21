@@ -13,16 +13,18 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @Service
-public class ProdutoServiceImpl {
+public class ProdutoServiceImpl implements ProdutoService {
 	
 	private final ProdutoRepository produtoRepository;
 	private final ProdutoMapper produtoMapper;
 	
+	@Override
 	public List<ProdutoDto> todosOsProdutos() {
 		return produtoRepository.findAll().stream().map(produtoMapper::toDto).collect(Collectors.toList());
 	}
 	
-	public ProdutoDto produtoPorId(Long id) {
+	@Override
+	public ProdutoDto recuperaProdutoPorId(Long id) {
 		Produto produtoRetornado = produtoRepository.findById(id).orElseThrow(() -> new RuntimeException("Produto não encontrado"));
 		return produtoMapper.toDto(produtoRetornado);
 	}
