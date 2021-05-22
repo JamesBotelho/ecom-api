@@ -1,12 +1,14 @@
 package br.com.jmsdevelopment.ecom.model;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -32,4 +34,6 @@ public class Cliente {
 	private LocalDate dataNascimento;
 	@Column(name = "SENHA", nullable = false)
 	private String senha;
+	@OneToMany(mappedBy = "cliente")
+	private List<Pedido> pedidos;
 }
