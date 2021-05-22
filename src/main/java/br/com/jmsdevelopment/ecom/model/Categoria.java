@@ -11,8 +11,10 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
+@AllArgsConstructor
 @Data
 @Entity
 @Table(name = "CATEGORIA")
