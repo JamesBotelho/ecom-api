@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.jmsdevelopment.ecom.dto.categoria.CategoriaDto;
+import br.com.jmsdevelopment.ecom.dto.produto.ProdutoDto;
 import br.com.jmsdevelopment.ecom.service.CategoriaService;
 import lombok.AllArgsConstructor;
 
@@ -29,5 +30,11 @@ public class CategoriaController {
 	@GetMapping("{id}")
 	public CategoriaDto categoriaPorId(@PathVariable Long id) {
 		return categoriaService.categoriaPorId(id);
+	}
+	
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping("{id}/produtos")
+	public List<ProdutoDto> produtosDaCategoria(@PathVariable Long id) {
+		return categoriaService.produtosDaCategoria(id);
 	}
 }
