@@ -6,7 +6,9 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import br.com.jmsdevelopment.ecom.dto.categoria.CategoriaDto;
+import br.com.jmsdevelopment.ecom.helpers.exception.CategoriaNaoEncontradaException;
 import br.com.jmsdevelopment.ecom.mappers.CategoriaMapper;
+import br.com.jmsdevelopment.ecom.model.Categoria;
 import br.com.jmsdevelopment.ecom.repository.CategoriaRepository;
 import lombok.AllArgsConstructor;
 
@@ -19,12 +21,18 @@ public class CategoriaServiceImpl implements CategoriaService {
 
 	@Override
 	public List<CategoriaDto> todasAsCategorias() {
-		return categoriaRepository.findAll().stream().map(categoriaMapper::toDto).collect(Collectors.toList());
+		List<Categoria> categorias = categoriaRepository.findAll();
+		
+		if (categorias.isEmpty()) {
+			throw new CategoriaNaoEncontradaException("Não existem categorias cadastradas");
+		}
+		
+		return categorias.stream().map(categoriaMapper::toDto).collect(Collectors.toList());
 	}
 
 	@Override
 	public CategoriaDto categoriaPorId(Long id) {
-		return categoriaMapper.toDto(categoriaRepository.findById(id).orElseThrow(() -> new RuntimeException("Categoria não encontrada")));
+		return categoriaMapper.toDto(categoriaRepository.findById(id).orElseThrow(() -> new CategoriaNaoEncontradaException()));
 	}
 
 }
