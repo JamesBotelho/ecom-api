@@ -1,7 +1,9 @@
 package br.com.jmsdevelopment.ecom.builder;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 
+import br.com.jmsdevelopment.ecom.model.Categoria;
 import br.com.jmsdevelopment.ecom.model.Produto;
 
 public class ProdutoBuilder {
@@ -11,6 +13,8 @@ public class ProdutoBuilder {
 	private String urlImagem;
 	private BigDecimal preco;
 	private BigDecimal precoPromocional;
+	private Long idCategoria;
+	private String nomeCategoria;
 	
 	public ProdutoBuilder comId(Long id) {
 		this.id = id;
@@ -42,8 +46,19 @@ public class ProdutoBuilder {
 		return this;
 	}
 	
+	public ProdutoBuilder comIdCategoria(Long idDescricao) {
+		this.idCategoria = idDescricao;
+		return this;
+	}
+	
+	public ProdutoBuilder comNomeCategoria(String nomeDescricao) {
+		this.nomeCategoria = nomeDescricao;
+		return this;
+	}
+	
 	public Produto build() {
-		return new Produto(id, nome, descricao, urlImagem, preco, precoPromocional);
+		Categoria categoria = new Categoria(idCategoria, nomeCategoria, Arrays.asList());
+		return new Produto(id, nome, descricao, urlImagem, preco, precoPromocional, categoria);
 	}
 	
 }
