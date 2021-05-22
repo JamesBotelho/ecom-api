@@ -1,5 +1,8 @@
 name: Build da aplicação
 
+on:
+  push:
+
 jobs:
   build:
     name: Build
