@@ -1,6 +1,7 @@
 package br.com.jmsdevelopment.ecom.builder;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 
 import br.com.jmsdevelopment.ecom.model.Cliente;
 
@@ -48,6 +49,6 @@ public class ClienteBuilder {
 	
 	public Cliente build() {
 		LocalDate local = LocalDate.parse(this.dataNascimento);
-		return new Cliente(id, nome, cpf, email, local, senha);
+		return new Cliente(id, nome, cpf, email, local, senha, Arrays.asList());
 	}
 }

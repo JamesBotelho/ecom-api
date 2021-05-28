@@ -30,10 +30,10 @@ public interface PedidoMapper {
 		@Mapping(target = "cliente.cpf", ignore = true),
 		@Mapping(target = "cliente.email", ignore = true),
 		@Mapping(target = "cliente.dataNascimento", ignore = true),
-		@Mapping(target = "cliente.nome", ignore = true),
+		@Mapping(target = "cliente.nome", ignore = true)
 	})
 	Pedido toPedidoEntity(PedidoDto pedidoDto);
-	
+
 	@Mappings({
 		@Mapping(target = "produto.id", source = "idProduto")
 	})

@@ -32,7 +32,7 @@ public class Produto {
 	private String urlImagem;
 	@Column(name = "PRECO", nullable = false)
 	private BigDecimal preco;
-	@Column(name = "PRECO_PROMOCIONAL", nullable = false)
+	@Column(name = "PRECO_PROMOCIONAL")
 	private BigDecimal precoPromocional;
 	@ManyToOne
 	@JoinColumn(name = "ID_CATEGORIA", nullable = false)
