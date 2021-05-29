@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class PedidoDto {
+	private Long id;
 	private BigDecimal valorTotal;
 	private List<ItemPedidoDto> itens;
 	private ClienteDto cliente;
