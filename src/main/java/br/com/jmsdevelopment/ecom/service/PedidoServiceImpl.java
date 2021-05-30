@@ -1,9 +1,11 @@
 package br.com.jmsdevelopment.ecom.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import br.com.jmsdevelopment.ecom.helpers.exception.PedidoInvalidoException;
 import br.com.jmsdevelopment.ecom.helpers.exception.PedidoNaoEncontradoException;
+import br.com.jmsdevelopment.ecom.model.ItemPedido;
 import org.springframework.stereotype.Service;
 
 import br.com.jmsdevelopment.ecom.dto.pedido.ItemPedidoDto;
@@ -34,6 +36,7 @@ public class PedidoServiceImpl implements PedidoService {
 		validaPrecoProdutos(pedidoDto.getItens());
 		
 		Pedido pedido = pedidoMapper.toPedidoEntity(pedidoDto);
+		pedido.setValorTotal(calculaValorTotalPedido(pedido.getItens()));
 		Pedido pedidoSalvo = pedidoRepository.save(pedido);
 		return pedidoMapper.toPedidoDto(pedidoSalvo);
 	}
@@ -48,10 +51,18 @@ public class PedidoServiceImpl implements PedidoService {
 			
 			if (produtoBanco.getPrecoPromocional() != null && produto.getValorProduto().compareTo(produtoBanco.getPrecoPromocional()) != 0) {
 				throw new PedidoInvalidoException("Preço do produto " + produtoBanco.getNome() +  " inválido");
-			} else if (produtoBanco.getPreco().compareTo(produto.getValorProduto()) != 0) {
+			} else if (produtoBanco.getPrecoPromocional() == null && produtoBanco.getPreco().compareTo(produto.getValorProduto()) != 0) {
 				throw new PedidoInvalidoException("Preço do produto " + produtoBanco.getNome() +  " inválido");
 			}
 		});
+	}
+
+	private BigDecimal calculaValorTotalPedido(List<ItemPedido> produtos) {
+		return produtos
+				.stream()
+				.map(ItemPedido::getValorProduto)
+				.reduce(BigDecimal::add)
+				.orElseThrow(() -> new PedidoInvalidoException("Ocorreu um erro ao calcular o valor total do pedido"));
 	}
 
 }
