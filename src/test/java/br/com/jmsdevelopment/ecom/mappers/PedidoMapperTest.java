@@ -105,6 +105,7 @@ class PedidoMapperTest {
 
         assertEquals(1L, clienteConvertidoDto.getId());
         assertEquals("Teste", clienteConvertidoDto.getNome());
+        assertEquals("teste@email.com", clienteConvertidoDto.getEmail());
         assertNull(clienteConvertidoDto.getCpf());
         assertNull(clienteConvertidoDto.getDataNascimento());
     }
