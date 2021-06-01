@@ -12,8 +12,6 @@ import br.com.jmsdevelopment.ecom.model.Pedido;
 @Mapper(componentModel = "spring")
 public interface PedidoMapper {
 	@Mappings({
-		//@Mapping(target = "cliente.id", source = "cliente.id"),
-		//@Mapping(target = "cliente.nome", source = "cliente.nome"),
 		@Mapping(target = "cliente.cpf", ignore = true),
 		@Mapping(target = "cliente.dataNascimento", ignore = true)
 	})
