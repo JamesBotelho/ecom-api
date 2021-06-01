@@ -1,6 +1,7 @@
 package br.com.jmsdevelopment.ecom.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.*;
@@ -25,4 +26,6 @@ public class Pedido {
 	private Cliente cliente;
 	@OneToMany(mappedBy = "pedido", cascade = CascadeType.PERSIST)
 	private List<ItemPedido> itens;
+	@Column(name = "DATA_HORA", nullable = false)
+	private LocalDateTime dataHora;
 }

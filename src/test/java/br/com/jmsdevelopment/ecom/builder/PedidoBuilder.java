@@ -9,6 +9,7 @@ import org.springframework.security.core.parameters.P;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.List;
 public class PedidoBuilder {
     private Long id;
     private BigDecimal valorTotal;
+    private String dataHora;
     private List<Long> idProduto;
     private List<String> nomeProduto;
     private List<Integer> quantidadeProduto;
@@ -52,6 +54,11 @@ public class PedidoBuilder {
         return this;
     }
 
+    public PedidoBuilder comDataHora(String dataHora) {
+        this.dataHora = dataHora;
+        return this;
+    }
+
     private String getNomeProduto(int posicao) {
         if (posicao >= this.nomeProduto.size()) {
             return null;
@@ -84,6 +91,6 @@ public class PedidoBuilder {
             ItemPedido itemPedido = new ItemPedido(1L, quantidadeProduto, valorProduto, produto, null);
             itensPedido.add(itemPedido);
         }
-        return new Pedido(this.id, this.valorTotal, this.cliente, itensPedido);
+        return new Pedido(this.id, this.valorTotal, this.cliente, itensPedido, LocalDateTime.parse(dataHora));
     }
 }

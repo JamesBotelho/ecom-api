@@ -57,6 +57,7 @@ class PedidoServiceImplMockTest {
                 .comItemPedido(1L, "Produto um", 1, new BigDecimal(50))
                 .comItemPedido(2L, "Produto dois", 1, new BigDecimal(50))
                 .comCliente(1L, "Nome cliente", null, "email@example.com", null)
+                .comDataHora("2021-05-31T21:00:00")
                 .build();
         pedidoBanco = new PedidoBuilder()
                 .comId(1L)
@@ -64,6 +65,7 @@ class PedidoServiceImplMockTest {
                 .comItemPedido(1L, "Produto um", 1, new BigDecimal(50))
                 .comItemPedido(2L, "Produto dois", 1, new BigDecimal(50))
                 .comCliente(1L, "Nome cliente", "cpf-cliente", "email@example.com", "1990-01-01", "123456")
+                .comDataHora("2021-05-31T21:00:00")
                 .build();
 
         produtoBancoUm = new ProdutoBuilder()

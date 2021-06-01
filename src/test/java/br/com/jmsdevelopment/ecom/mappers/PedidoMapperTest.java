@@ -12,6 +12,7 @@ import org.mapstruct.factory.Mappers;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
@@ -22,9 +23,11 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class PedidoMapperTest {
     private final PedidoMapper pedidoMapper = Mappers.getMapper(PedidoMapper.class);
 
+    private String dataHora = "2021-05-31T21:00:00";
+
     @Test
     public void deve_RetornarPedidoEntitySemId_QuandoTransformaPedidoDtoEmEntity() {
-        PedidoDto pedidoDto = new PedidoDto(1L, new BigDecimal(50), null, null);
+        PedidoDto pedidoDto = new PedidoDto(1L, new BigDecimal(50), null, null, null);
 
         Pedido pedidoEntity = pedidoMapper.toPedidoEntity(pedidoDto);
 
@@ -34,7 +37,7 @@ class PedidoMapperTest {
     @Test
     public void deve_RetornarClienteApenasComId_QuandoTransformaPedidoDtoEmEntity() {
         ClienteDto clienteDto = new ClienteDto(1L, "nome", "cpf", "email", "nascimento");
-        PedidoDto pedidoDto = new PedidoDto(1L, new BigDecimal(50), null, clienteDto);
+        PedidoDto pedidoDto = new PedidoDto(1L, new BigDecimal(50), null, clienteDto, dataHora);
         Pedido pedidoEntity = pedidoMapper.toPedidoEntity(pedidoDto);
 
         Cliente cliente = pedidoEntity.getCliente();
@@ -52,7 +55,7 @@ class PedidoMapperTest {
         ItemPedidoDto itemPedidoDtoDois = new ItemPedidoDto(2L, "nomeProdutoDois", 1, new BigDecimal(100));
         List<ItemPedidoDto> itensPedidoDto = Arrays.asList(itemPedidoDtoUm, itemPedidoDtoDois);
         ClienteDto clienteDto = new ClienteDto(1L, "nome", "cpf", "email", "nascimento");
-        PedidoDto pedidoDto = new PedidoDto(1L, new BigDecimal(50), itensPedidoDto, clienteDto);
+        PedidoDto pedidoDto = new PedidoDto(1L, new BigDecimal(50), itensPedidoDto, clienteDto, dataHora);
 
         Pedido pedidoEntity = pedidoMapper.toPedidoEntity(pedidoDto);
 
@@ -85,7 +88,7 @@ class PedidoMapperTest {
         Cliente cliente = new Cliente(1L, "Teste", "48313525606", "teste@email.com", LocalDate.of(1995, Month.JULY, 26), "1234567890", null);
         Produto produto = new Produto(1L, "Nome Produto", "Descrição Produto", "http://url_imagem", new BigDecimal(50), null, null);
         ItemPedido itemPedidoUm = new ItemPedido(1L, 2, new BigDecimal(50), produto, null);
-        Pedido pedido = new Pedido(1L, valorTotal, cliente, Arrays.asList(itemPedidoUm));
+        Pedido pedido = new Pedido(1L, valorTotal, cliente, Arrays.asList(itemPedidoUm), LocalDateTime.parse(dataHora));
 
         PedidoDto pedidoConvertidoDto = pedidoMapper.toPedidoDto(pedido);
         List<ItemPedidoDto> itensConvertidoDto = pedidoConvertidoDto.getItens();

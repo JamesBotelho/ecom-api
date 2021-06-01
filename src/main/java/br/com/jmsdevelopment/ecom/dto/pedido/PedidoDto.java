@@ -17,4 +17,5 @@ public class PedidoDto {
 	private BigDecimal valorTotal;
 	private List<ItemPedidoDto> itens;
 	private ClienteDto cliente;
+	private String dataHora;
 }

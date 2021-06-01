@@ -11,6 +11,7 @@ import java.util.List;
 public class PedidoDtoBuilder {
     private Long id;
     private BigDecimal valorTotal;
+    private String dataHora;
     private List<Long> idProduto;
     private List<String> nomeProduto;
     private List<Integer> quantidadeProduto;
@@ -31,6 +32,11 @@ public class PedidoDtoBuilder {
 
     public PedidoDtoBuilder comValorTotal(BigDecimal valorTotal) {
         this.valorTotal = valorTotal;
+        return this;
+    }
+
+    public PedidoDtoBuilder comDataHora(String dataHora) {
+        this.dataHora = dataHora;
         return this;
     }
 
@@ -79,6 +85,6 @@ public class PedidoDtoBuilder {
             itensPedido.add(itemPedidoDto);
         }
 
-        return new PedidoDto(this.id, this.valorTotal, itensPedido, this.clienteDto);
+        return new PedidoDto(this.id, this.valorTotal, itensPedido, this.clienteDto, dataHora);
     }
 }
