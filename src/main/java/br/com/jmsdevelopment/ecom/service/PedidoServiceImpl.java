@@ -5,7 +5,10 @@ import java.util.List;
 
 import br.com.jmsdevelopment.ecom.helpers.exception.PedidoInvalidoException;
 import br.com.jmsdevelopment.ecom.helpers.exception.PedidoNaoEncontradoException;
+import br.com.jmsdevelopment.ecom.model.Cliente;
 import br.com.jmsdevelopment.ecom.model.ItemPedido;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import br.com.jmsdevelopment.ecom.dto.pedido.ItemPedidoDto;
@@ -16,6 +19,9 @@ import br.com.jmsdevelopment.ecom.model.Pedido;
 import br.com.jmsdevelopment.ecom.repository.PedidoRepository;
 import lombok.AllArgsConstructor;
 
+import javax.transaction.Transactional;
+
+@Transactional
 @AllArgsConstructor
 @Service
 public class PedidoServiceImpl implements PedidoService {
@@ -40,7 +46,19 @@ public class PedidoServiceImpl implements PedidoService {
 		Pedido pedidoSalvo = pedidoRepository.save(pedido);
 		return pedidoMapper.toPedidoDto(pedidoSalvo);
 	}
-	
+
+	@Override
+	public Page<PedidoDto> pedidosDoCliente(Long idCliente, Pageable pageable) {
+		validaCliente(idCliente);
+		Page<Pedido> pedidosCliente = pedidoRepository.findByClienteId(idCliente, pageable);
+
+		if (pedidosCliente.isEmpty()) {
+			throw new PedidoNaoEncontradoException("Não foi encontrado nenhum pedido para este cliente");
+		}
+
+		return pedidosCliente.map(pedidoMapper::toPedidoDto);
+	}
+
 	private void validaCliente(Long id) {
 		clienteService.recuperarClientePorId(id);
 	}

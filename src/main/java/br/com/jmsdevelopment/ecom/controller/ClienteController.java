@@ -2,6 +2,12 @@ package br.com.jmsdevelopment.ecom.controller;
 
 import java.net.URI;
 
+import br.com.jmsdevelopment.ecom.dto.pedido.PedidoDto;
+import br.com.jmsdevelopment.ecom.service.PedidoService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,10 +32,18 @@ import lombok.AllArgsConstructor;
 public class ClienteController {
 	
 	private final ClienteService clienteService;
+	private final PedidoService pedidoService;
 	
 	@GetMapping("{id}")
 	public ResponseEntity<ClienteDto> recuperaClientePorId(@PathVariable Long id) {
 		return ResponseEntity.ok(clienteService.recuperarClientePorId(id));
+	}
+
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping("{id}/pedidos")
+	public Page<PedidoDto> pedidosCliente(@PathVariable Long idCliente,
+										  @PageableDefault(sort="dataHora", direction = Sort.Direction.DESC) Pageable pageable) {
+		return pedidoService.pedidosDoCliente(idCliente, pageable);
 	}
 	
 	@PostMapping
