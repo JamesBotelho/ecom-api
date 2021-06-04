@@ -42,7 +42,7 @@ public class ClienteController {
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("{id}/pedidos")
 	public Page<PedidoDto> pedidosCliente(@PathVariable Long idCliente,
-										  @PageableDefault(sort="dataHora", direction = Sort.Direction.DESC) Pageable pageable) {
+										  @PageableDefault(sort="dataHora", direction = Sort.Direction.ASC) Pageable pageable) {
 		return pedidoService.pedidosDoCliente(idCliente, pageable);
 	}
 	
