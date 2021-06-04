@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -19,22 +20,19 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Entity
-@Table(name = "PRODUTO")
-public class Produto {
+@Table(name = "ITEM_PEDIDO")
+public class ItemPedido {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@Column(name = "NOME", length = 100, nullable = false)
-	private String nome;
-	@Column(name = "DESCRICAO", length = 500, nullable = false)
-	private String descricao;
-	@Column(name = "URL_IMAGEM", length = 100, nullable = false)
-	private String urlImagem;
-	@Column(name = "PRECO", nullable = false)
-	private BigDecimal preco;
-	@Column(name = "PRECO_PROMOCIONAL")
-	private BigDecimal precoPromocional;
+	@Column(name = "QUANTIDADE", nullable = false)
+	private Integer quantidade;
+	@Column(name = "VALOR_PRODUTO", nullable = false, precision = 2)
+	private BigDecimal valorProduto;
+	@OneToOne
+	@JoinColumn(name = "ID_PRODUTO", nullable = false)
+	private Produto produto;
 	@ManyToOne
-	@JoinColumn(name = "ID_CATEGORIA", nullable = false)
-	private Categoria categoria;
+	@JoinColumn(name = "ID_PEDIDO", nullable = false)
+	private Pedido pedido;
 }
