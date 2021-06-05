@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +22,9 @@ import br.com.jmsdevelopment.ecom.helpers.exception.ProdutoNaoEncontradoExceptio
 import br.com.jmsdevelopment.ecom.mappers.ProdutoMapper;
 import br.com.jmsdevelopment.ecom.model.Produto;
 import br.com.jmsdevelopment.ecom.repository.ProdutoRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 class ProdutoServiceImplMockTest {
 
@@ -93,5 +97,26 @@ class ProdutoServiceImplMockTest {
 		
 		assertThrows(ProdutoNaoEncontradoException.class, () -> produtoService.recuperaProdutoPorId(2L));
 	}
-	
+
+	@Test
+	public void deve_RetornarUmProduto_QuandoPesquisaPorCategoria() {
+		Mockito.when(produtoRepository.findByCategoriaId(1L, Pageable.unpaged())).thenReturn(new PageImpl<>(Collections.singletonList(produto)));
+		Mockito.when(produtoMapper.toDto(produto)).thenReturn(produtoDto);
+
+		Page<ProdutoDto> produtosRetornados = produtoService.produtosPorCategoria(1L, Pageable.unpaged());
+
+		assertEquals(1, produtosRetornados.getTotalElements());
+		assertEquals(1, produtosRetornados.getTotalPages());
+
+		ProdutoDto produtoRetornado = produtosRetornados.getContent().get(0);
+
+		assertEquals(produtoDto, produtoRetornado);
+	}
+
+	@Test
+	public void deve_lancarProdutoNaoEncontradoExecption_QuandoNaoHaProdutosCadastradosNaCategoria() {
+		Mockito.when(produtoRepository.findByCategoriaId(1L, Pageable.unpaged())).thenReturn(Page.empty());
+
+		assertThrows(ProdutoNaoEncontradoException.class, () -> produtoService.produtosPorCategoria(1L, Pageable.unpaged()));
+	}
 }

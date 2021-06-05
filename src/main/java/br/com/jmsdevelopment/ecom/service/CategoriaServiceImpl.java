@@ -43,17 +43,5 @@ public class CategoriaServiceImpl implements CategoriaService {
 	public CategoriaDto categoriaPorId(Long id) {
 		return categoriaMapper.toDto(porId(id));
 	}
-
-	@Override
-	public List<ProdutoDto> produtosDaCategoria(Long id) {
-		Categoria categoria = porId(id);
-		List<Produto> produtos = categoria.getProdutos();
-		
-		if (produtos.isEmpty()) {
-			throw new ProdutoNaoEncontradoException("Não há produtos cadastrados nesta categoria");
-		}
-		
-		return produtos.stream().map(produtoMapper::toDto).collect(Collectors.toList());
-	}
 	
 }

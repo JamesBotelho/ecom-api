@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,7 +48,7 @@ class CategoriaServiceImplMockTest {
 	public void beforeEach() {
 		MockitoAnnotations.openMocks(this);
 		this.categoriaService = new CategoriaServiceImpl(categoriaRepository, categoriaMapper, produtoMapper);
-		this.categoria = new Categoria(1L, "Teste", Arrays.asList());
+		this.categoria = new Categoria(1L, "Teste", Collections.emptyList());
 		this.categoriaDto = new CategoriaDto(1L, "Teste");
 		this.produto = new ProdutoBuilder()
 				.comId(1L)
@@ -70,7 +71,7 @@ class CategoriaServiceImplMockTest {
 
 	@Test
 	public void deve_RetornarListaDeCategorias_QuandoListaTodasCategorias() {
-		Mockito.when(categoriaRepository.findAll()).thenReturn(Arrays.asList(categoria));
+		Mockito.when(categoriaRepository.findAll()).thenReturn(Collections.singletonList(categoria));
 		
 		List<CategoriaDto> categoriasRetornadas = categoriaService.todasAsCategorias();
 		
@@ -80,30 +81,14 @@ class CategoriaServiceImplMockTest {
 	
 	@Test
 	public void deve_RetornarCategoriaNaoEncontradaException_QuandoPesquisaPorIdInexistente() {
-		Mockito.when(categoriaRepository.findById(2L)).thenReturn(Optional.ofNullable(null));
+		Mockito.when(categoriaRepository.findById(2L)).thenReturn(Optional.empty());
 		assertThrows(CategoriaNaoEncontradaException.class, () -> categoriaService.categoriaPorId(2L));
 	}
 	
 	@Test
 	public void deve_RetornarCategoriaNaoEncontradaException_QuandoNaoHaCategoriasCadastradas() {
-		Mockito.when(categoriaRepository.findAll()).thenReturn(Arrays.asList());
+		Mockito.when(categoriaRepository.findAll()).thenReturn(Collections.emptyList());
 		assertThrows(CategoriaNaoEncontradaException.class, () -> categoriaService.todasAsCategorias());
-	}
-	
-	@Test
-	public void deve_ChamarGetProdutosDaCategoria_QuandoCategoriaValida() {
-		Mockito.when(categoriaRepository.findById(1L)).thenReturn(Optional.of(categoriaSpy));
-		Mockito.when(categoriaSpy.getProdutos()).thenReturn(Arrays.asList(produto));
-		
-		categoriaService.produtosDaCategoria(1L);
-		
-		Mockito.verify(categoriaSpy).getProdutos();
-	}
-	
-	@Test
-	public void deve_RetornarException_QuandoNaoHaProdutosCadastradosNaCategoria() {
-		Mockito.when(categoriaSpy.getProdutos()).thenReturn(Arrays.asList());
-		assertThrows(ProdutoNaoEncontradoException.class, () -> categoriaService.produtosDaCategoria(1L));
 	}
 
 }
