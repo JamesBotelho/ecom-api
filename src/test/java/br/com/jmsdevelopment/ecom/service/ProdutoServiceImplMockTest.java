@@ -70,8 +70,9 @@ class ProdutoServiceImplMockTest {
 
 	@Test
 	public void deve_ChamarListagemDoBanco_QuandoListaTodosProdutos() {
-		produtoService.todosOsProdutos();
-		Mockito.verify(produtoRepository).findAll();
+		Mockito.when(produtoRepository.findAll(Pageable.unpaged())).thenReturn(new PageImpl<>(Collections.singletonList(produto)));
+		produtoService.todosOsProdutos(Pageable.unpaged());
+		Mockito.verify(produtoRepository).findAll(Pageable.unpaged());
 	}
 	
 	@Test
@@ -86,9 +87,9 @@ class ProdutoServiceImplMockTest {
 	
 	@Test
 	public void deve_lancarProdutoNaoEncontradoException_QuandoListaProdutosSemTerProdutosCadastrado() {
-		Mockito.when(produtoRepository.findAll()).thenReturn(Arrays.asList());
+		Mockito.when(produtoRepository.findAll(Pageable.unpaged())).thenReturn(Page.empty());
 		
-		assertThrows(ProdutoNaoEncontradoException.class, () -> produtoService.todosOsProdutos());
+		assertThrows(ProdutoNaoEncontradoException.class, () -> produtoService.todosOsProdutos(Pageable.unpaged()));
 	}
 	
 	@Test

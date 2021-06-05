@@ -10,9 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @AllArgsConstructor
 @Service
 public class ProdutoServiceImpl implements ProdutoService {
@@ -21,14 +18,14 @@ public class ProdutoServiceImpl implements ProdutoService {
 	private final ProdutoMapper produtoMapper;
 	
 	@Override
-	public List<ProdutoDto> todosOsProdutos() {
-		List<ProdutoDto> produtos = produtoRepository.findAll().stream().map(produtoMapper::toDto).collect(Collectors.toList());
-		
-		if (produtos.isEmpty()) {
+	public Page<ProdutoDto> todosOsProdutos(Pageable pageable) {
+		Page<Produto> produtoEntityPaginado = produtoRepository.findAll(pageable);
+
+		if (produtoEntityPaginado.isEmpty()) {
 			throw new ProdutoNaoEncontradoException("Não há produtos cadastrados");
 		}
-		
-		return produtos;
+
+		return produtoEntityPaginado.map(produtoMapper::toDto);
 	}
 	
 	@Override
