@@ -1,16 +1,17 @@
 package br.com.jmsdevelopment.ecom.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Service;
-
 import br.com.jmsdevelopment.ecom.dto.produto.ProdutoDto;
 import br.com.jmsdevelopment.ecom.helpers.exception.ProdutoNaoEncontradoException;
 import br.com.jmsdevelopment.ecom.mappers.ProdutoMapper;
 import br.com.jmsdevelopment.ecom.model.Produto;
 import br.com.jmsdevelopment.ecom.repository.ProdutoRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -32,7 +33,18 @@ public class ProdutoServiceImpl implements ProdutoService {
 	
 	@Override
 	public ProdutoDto recuperaProdutoPorId(Long id) {
-		Produto produtoRetornado = produtoRepository.findById(id).orElseThrow(() -> new ProdutoNaoEncontradoException());
+		Produto produtoRetornado = produtoRepository.findById(id).orElseThrow(ProdutoNaoEncontradoException::new);
 		return produtoMapper.toDto(produtoRetornado);
+	}
+
+	@Override
+	public Page<ProdutoDto> produtosPorCategoria(Long id, Pageable pageable) {
+		Page<Produto> produtosRetornados = produtoRepository.findByCategoriaId(id, pageable);
+
+		if (produtosRetornados.isEmpty()) {
+			throw new ProdutoNaoEncontradoException("Não há produtos cadastrados nesta categoria");
+		}
+
+		return produtosRetornados.map(produtoMapper::toDto);
 	}
 }

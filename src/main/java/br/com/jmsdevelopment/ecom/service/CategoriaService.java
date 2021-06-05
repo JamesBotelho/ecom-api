@@ -8,5 +8,4 @@ import br.com.jmsdevelopment.ecom.dto.produto.ProdutoDto;
 public interface CategoriaService {
 	List<CategoriaDto> todasAsCategorias();
 	CategoriaDto categoriaPorId(Long id);
-	List<ProdutoDto> produtosDaCategoria(Long id);
 }
