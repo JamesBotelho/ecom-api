@@ -4,6 +4,7 @@ import br.com.jmsdevelopment.ecom.builder.PedidoBuilder;
 import br.com.jmsdevelopment.ecom.builder.PedidoDtoBuilder;
 import br.com.jmsdevelopment.ecom.builder.ProdutoBuilder;
 import br.com.jmsdevelopment.ecom.dto.cliente.ClienteDto;
+import br.com.jmsdevelopment.ecom.dto.cliente.ClientePedidoDto;
 import br.com.jmsdevelopment.ecom.dto.pedido.ItemPedidoDto;
 import br.com.jmsdevelopment.ecom.dto.pedido.PedidoDto;
 import br.com.jmsdevelopment.ecom.helpers.exception.ClienteNaoEncontradoException;
@@ -56,7 +57,7 @@ class PedidoServiceImplMockTest {
                 .comValorTotal(new BigDecimal("100"))
                 .comItemPedido(1L, "Produto um", 1, new BigDecimal(50))
                 .comItemPedido(2L, "Produto dois", 1, new BigDecimal(50))
-                .comCliente(1L, "Nome cliente", null, "email@example.com", null)
+                .comCliente(1L, "Nome cliente", "email@example.com")
                 .comDataHora("2021-05-31T21:00:00")
                 .build();
         pedidoBanco = new PedidoBuilder()
@@ -98,7 +99,7 @@ class PedidoServiceImplMockTest {
     @Test
     public void naoDeve_chamarPersistenciaNoBanco_QuandoClienteEInvalido() {
         PedidoDto pedidoDto = Mockito.mock(PedidoDto.class);
-        ClienteDto clienteDto = Mockito.mock(ClienteDto.class);
+        ClientePedidoDto clienteDto = Mockito.mock(ClientePedidoDto.class);
 
         Mockito.when(pedidoDto.getCliente()).thenReturn(clienteDto);
         Mockito.when(clienteDto.getId()).thenReturn(1L);

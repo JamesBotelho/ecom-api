@@ -1,6 +1,7 @@
 package br.com.jmsdevelopment.ecom.mappers;
 
 import br.com.jmsdevelopment.ecom.dto.cliente.ClienteDto;
+import br.com.jmsdevelopment.ecom.dto.cliente.ClientePedidoDto;
 import br.com.jmsdevelopment.ecom.dto.pedido.ItemPedidoDto;
 import br.com.jmsdevelopment.ecom.dto.pedido.PedidoDto;
 import br.com.jmsdevelopment.ecom.model.Cliente;
@@ -36,7 +37,7 @@ class PedidoMapperTest {
 
     @Test
     public void deve_RetornarClienteApenasComId_QuandoTransformaPedidoDtoEmEntity() {
-        ClienteDto clienteDto = new ClienteDto(1L, "nome", "cpf", "email", "nascimento");
+        ClientePedidoDto clienteDto = new ClientePedidoDto(1L, "nome", "email");
         PedidoDto pedidoDto = new PedidoDto(1L, new BigDecimal(50), null, clienteDto, dataHora);
         Pedido pedidoEntity = pedidoMapper.toPedidoEntity(pedidoDto);
 
@@ -54,7 +55,7 @@ class PedidoMapperTest {
         ItemPedidoDto itemPedidoDtoUm = new ItemPedidoDto(1L, "nomeProdutoUm", 1, new BigDecimal(50));
         ItemPedidoDto itemPedidoDtoDois = new ItemPedidoDto(2L, "nomeProdutoDois", 1, new BigDecimal(100));
         List<ItemPedidoDto> itensPedidoDto = Arrays.asList(itemPedidoDtoUm, itemPedidoDtoDois);
-        ClienteDto clienteDto = new ClienteDto(1L, "nome", "cpf", "email", "nascimento");
+        ClientePedidoDto clienteDto = new ClientePedidoDto(1L, "nome", "email");
         PedidoDto pedidoDto = new PedidoDto(1L, new BigDecimal(50), itensPedidoDto, clienteDto, dataHora);
 
         Pedido pedidoEntity = pedidoMapper.toPedidoEntity(pedidoDto);
@@ -104,12 +105,10 @@ class PedidoMapperTest {
         assertEquals(2, itemPedidoConvertidoDto.getQuantidade());
         assertEquals(new BigDecimal(50), itemPedidoConvertidoDto.getValorProduto());
 
-        ClienteDto clienteConvertidoDto = pedidoConvertidoDto.getCliente();
+        ClientePedidoDto clienteConvertidoDto = pedidoConvertidoDto.getCliente();
 
         assertEquals(1L, clienteConvertidoDto.getId());
         assertEquals("Teste", clienteConvertidoDto.getNome());
         assertEquals("teste@email.com", clienteConvertidoDto.getEmail());
-        assertNull(clienteConvertidoDto.getCpf());
-        assertNull(clienteConvertidoDto.getDataNascimento());
     }
 }

@@ -3,7 +3,7 @@ package br.com.jmsdevelopment.ecom.dto.pedido;
 import java.math.BigDecimal;
 import java.util.List;
 
-import br.com.jmsdevelopment.ecom.dto.cliente.ClienteDto;
+import br.com.jmsdevelopment.ecom.dto.cliente.ClientePedidoDto;
 import lombok.AllArgsConstructor;
 
 import lombok.Data;
@@ -16,6 +16,6 @@ public class PedidoDto {
 	private Long id;
 	private BigDecimal valorTotal;
 	private List<ItemPedidoDto> itens;
-	private ClienteDto cliente;
+	private ClientePedidoDto cliente;
 	private String dataHora;
 }
