@@ -1,9 +1,6 @@
 package br.com.jmsdevelopment.ecom.mappers;
 
-import org.mapstruct.BeanMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.*;
 
 import br.com.jmsdevelopment.ecom.dto.cliente.ClienteCadastroDto;
 import br.com.jmsdevelopment.ecom.dto.cliente.ClienteDto;
@@ -13,7 +10,11 @@ import br.com.jmsdevelopment.ecom.model.Cliente;
 public interface ClienteMapper {
 	Cliente fromClienteCadastroToModel(ClienteCadastroDto clienteCadastroDto);
 	ClienteDto toClienteDto(Cliente cliente);
-	
+
+	@Mappings({
+		@Mapping(target = "email", ignore = true),
+		@Mapping(target = "cpf", ignore = true)
+	})
 	@BeanMapping(nullValuePropertyMappingStrategy =  NullValuePropertyMappingStrategy.IGNORE)
 	Cliente toModel(ClienteDto clienteDto, @MappingTarget Cliente cliente);
 }

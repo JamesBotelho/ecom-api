@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Optional;
 
+import br.com.jmsdevelopment.ecom.service.validacao.Validacao;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -31,6 +32,9 @@ class ClienteServiceImplMockTest {
 	
 	@Mock
 	private ClienteMapper clienteMapper;
+
+	@Mock
+	private Validacao<String> validacao;
 	
 	@Captor
 	public ArgumentCaptor<Cliente> clienteCaptor;
@@ -60,7 +64,7 @@ class ClienteServiceImplMockTest {
 				.build();
 		Mockito.when(clienteRepository.findById(1L)).thenReturn(Optional.ofNullable(cliente));
 		Mockito.when(clienteMapper.toClienteDto(cliente)).thenReturn(clienteDto);
-		clienteService = new ClienteServiceImpl(clienteRepository, clienteMapper);
+		clienteService = new ClienteServiceImpl(clienteRepository, clienteMapper, validacao, validacao);
 	}
 	
 	@Test
