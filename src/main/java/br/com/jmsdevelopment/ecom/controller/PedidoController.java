@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @AllArgsConstructor
@@ -23,7 +24,8 @@ public class PedidoController {
         return pedidoService.pedidoPorId(id);
     }
 
-    public ResponseEntity<PedidoDto> inserePedido(@RequestBody PedidoDto pedidoDto, UriComponentsBuilder uriBuilder) {
+    @PostMapping
+    public ResponseEntity<PedidoDto> inserePedido(@Valid @RequestBody PedidoDto pedidoDto, UriComponentsBuilder uriBuilder) {
         PedidoDto pedidoRetornado = pedidoService.salvaPedido(pedidoDto);
 
         URI uri = uriBuilder.path("/pedido/{id}").buildAndExpand(pedidoRetornado.getId()).toUri();

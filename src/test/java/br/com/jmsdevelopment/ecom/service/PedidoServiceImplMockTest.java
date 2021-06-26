@@ -14,6 +14,7 @@ import br.com.jmsdevelopment.ecom.mappers.PedidoMapper;
 import br.com.jmsdevelopment.ecom.mappers.ProdutoMapper;
 import br.com.jmsdevelopment.ecom.model.Pedido;
 import br.com.jmsdevelopment.ecom.model.Produto;
+import br.com.jmsdevelopment.ecom.repository.PedidoItemRepository;
 import br.com.jmsdevelopment.ecom.repository.PedidoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,6 +37,9 @@ class PedidoServiceImplMockTest {
     @Mock
     private PedidoRepository pedidoRepository;
 
+    @Mock
+    private PedidoItemRepository pedidoItemRepository;
+
     @Captor
     private ArgumentCaptor<Pedido> pedidoArgumentCaptor;
 
@@ -51,7 +55,7 @@ class PedidoServiceImplMockTest {
     public void beforeEach() {
         MockitoAnnotations.openMocks(this);
         this.pedidoMapper = Mappers.getMapper(PedidoMapper.class);
-        this.pedidoService = new PedidoServiceImpl(produtoService, clienteService, pedidoRepository, pedidoMapper);
+        this.pedidoService = new PedidoServiceImpl(produtoService, clienteService, pedidoRepository, pedidoMapper, pedidoItemRepository);
         pedidoRetornoEsperadoDto = new PedidoDtoBuilder()
                 .comId(1L)
                 .comValorTotal(new BigDecimal("100"))

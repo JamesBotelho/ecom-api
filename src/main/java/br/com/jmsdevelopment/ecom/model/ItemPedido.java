@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.parameters.P;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -35,4 +36,9 @@ public class ItemPedido {
 	@ManyToOne
 	@JoinColumn(name = "ID_PEDIDO", nullable = false)
 	private Pedido pedido;
+
+	public void setIdPedido(Long idPedido) {
+		pedido = new Pedido();
+		pedido.setId(idPedido);
+	}
 }

@@ -3,15 +3,15 @@ package br.com.jmsdevelopment.ecom.dto.cliente;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 public class ClientePedidoDto {
-    @NonNull
+    @NotNull
     @Positive
     private Long id;
     private String nome;
