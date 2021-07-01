@@ -1,6 +1,5 @@
 package br.com.jmsdevelopment.ecom.builder;
 
-import br.com.jmsdevelopment.ecom.dto.cliente.ClienteDto;
 import br.com.jmsdevelopment.ecom.dto.cliente.ClientePedidoDto;
 import br.com.jmsdevelopment.ecom.dto.pedido.ItemPedidoDto;
 import br.com.jmsdevelopment.ecom.dto.pedido.PedidoDto;

@@ -6,13 +6,10 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import br.com.jmsdevelopment.ecom.dto.categoria.CategoriaDto;
-import br.com.jmsdevelopment.ecom.dto.produto.ProdutoDto;
 import br.com.jmsdevelopment.ecom.helpers.exception.CategoriaNaoEncontradaException;
-import br.com.jmsdevelopment.ecom.helpers.exception.ProdutoNaoEncontradoException;
 import br.com.jmsdevelopment.ecom.mappers.CategoriaMapper;
 import br.com.jmsdevelopment.ecom.mappers.ProdutoMapper;
 import br.com.jmsdevelopment.ecom.model.Categoria;
-import br.com.jmsdevelopment.ecom.model.Produto;
 import br.com.jmsdevelopment.ecom.repository.CategoriaRepository;
 import lombok.AllArgsConstructor;
 
@@ -25,7 +22,7 @@ public class CategoriaServiceImpl implements CategoriaService {
 	private final ProdutoMapper produtoMapper;
 	
 	private Categoria porId(Long id) {
-		return categoriaRepository.findById(id).orElseThrow(() -> new CategoriaNaoEncontradaException());
+		return categoriaRepository.findById(id).orElseThrow(CategoriaNaoEncontradaException::new);
 	}
 
 	@Override

@@ -62,7 +62,7 @@ class ProdutoServiceImplMockTest {
 				.comPreco(new BigDecimal("200"))
 				.comPrecoPromocional(null)
 				.build();
-		produtosEntity = Arrays.asList(produto);
+		produtosEntity = Collections.singletonList(produto);
 		Mockito.when(produtoRepository.findAll()).thenReturn(produtosEntity);
 		
 		produtoService = new ProdutoServiceImpl(produtoRepository, produtoMapper);
@@ -94,7 +94,7 @@ class ProdutoServiceImplMockTest {
 	
 	@Test
 	public void deve_lancarProdutoNaoEncontradoException_QuandoRecuperaProdutoComIdInexistente() {
-		Mockito.when(produtoRepository.findById(2L)).thenReturn(Optional.ofNullable(null));
+		Mockito.when(produtoRepository.findById(2L)).thenReturn(Optional.empty());
 		
 		assertThrows(ProdutoNaoEncontradoException.class, () -> produtoService.recuperaProdutoPorId(2L));
 	}
