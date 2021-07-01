@@ -120,16 +120,17 @@ class PedidoServiceImplMockTest {
 
         Mockito.when(produtoService.recuperaProdutoPorId(1L)).thenReturn(produtoMapper.toDto(produtoBancoUm));
         Mockito.when(produtoService.recuperaProdutoPorId(2L)).thenReturn(produtoMapper.toDto(produtoBancoDois));
+        Mockito.when(pedidoRepository.saveAndFlush(Mockito.any(Pedido.class))).thenReturn(pedidoBanco);
 
         pedidoService.salvaPedido(pedidoRetornoEsperadoDto);
 
-        Mockito.verify(pedidoRepository).save(pedidoArgumentCaptor.capture());
+        Mockito.verify(pedidoRepository).saveAndFlush(pedidoArgumentCaptor.capture());
 
         BigDecimal valorTotalCalculado = pedidoArgumentCaptor.getValue().getValorTotal();
 
         assertEquals(new BigDecimal(100), valorTotalCalculado);
 
-        Mockito.verify(pedidoRepository).save(Mockito.any(Pedido.class));
+        Mockito.verify(pedidoRepository).saveAndFlush(Mockito.any(Pedido.class));
     }
 
     @Test

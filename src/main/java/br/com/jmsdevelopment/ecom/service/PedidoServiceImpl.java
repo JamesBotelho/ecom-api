@@ -30,7 +30,6 @@ public class PedidoServiceImpl implements PedidoService {
 	private final PedidoMapper pedidoMapper;
 	private final PedidoItemRepository pedidoItemRepository;
 
-	@Transactional
 	@Override
 	public PedidoDto pedidoPorId(Long id) {
 		return pedidoMapper.toPedidoDto(pedidoRepository.findById(id).orElseThrow(PedidoNaoEncontradoException::new));
@@ -54,7 +53,7 @@ public class PedidoServiceImpl implements PedidoService {
 			pedidoItemRepository.saveAndFlush(item);
 		});
 
-		return pedidoPorId(idPedido);
+		return pedidoMapper.toPedidoDto(pedidoSalvo);
 	}
 
 	@Transactional

@@ -22,7 +22,7 @@ public class PedidoDto {
 	@Valid
 	@NotEmpty
 	private List<ItemPedidoDto> itens;
-	//@Valid
+	@Valid
 	@NotNull
 	private ClientePedidoDto cliente;
 	private String dataHora;
