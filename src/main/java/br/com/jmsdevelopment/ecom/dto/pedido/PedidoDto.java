@@ -20,10 +20,10 @@ public class PedidoDto {
 	private Long id;
 	private BigDecimal valorTotal;
 	@Valid
-	@NotEmpty
+	@NotEmpty(message = "O pedido tem que conter pelo menos 1 item")
 	private List<ItemPedidoDto> itens;
 	@Valid
-	@NotNull
+	@NotNull(message = "É necessário informar o cliente do pedido")
 	private ClientePedidoDto cliente;
 	private String dataHora;
 }

@@ -13,14 +13,14 @@ import javax.validation.constraints.Positive;
 @AllArgsConstructor
 @Data
 public class ItemPedidoDto {
-	@NotNull
-	@Positive
+	@NotNull(message = "É necessário informar o id do produto")
+	@Positive(message = "ID do produto inválido")
 	private Long idProduto;
 	private String nomeProduto;
-	@NotNull
-	@Positive
+	@NotNull(message = "É necessário informar a quantidade do produto")
+	@Positive(message = "A quantidade de itens deve ser maior que zero")
 	private Integer quantidade;
-	@NotNull
-	@Positive
+	@NotNull(message = "Valor do produto inválido")
+	@Positive(message = "Valor do produto inválido")
 	private BigDecimal valorProduto;
 }
