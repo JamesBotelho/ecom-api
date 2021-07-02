@@ -18,6 +18,7 @@ public class ClienteDto {
 	private String nome;
 	@CPF(message = "CPF inválido")
 	private String cpf;
+	@NotBlank(message = "O e-mail é obrigatório")
 	@Email(message = "E-mail inválido")
 	private String email;
 	@Pattern(regexp = "[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])", message = "Data de nascimento inválida")
