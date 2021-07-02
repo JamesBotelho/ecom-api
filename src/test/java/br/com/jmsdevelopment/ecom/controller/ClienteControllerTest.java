@@ -167,6 +167,50 @@ class ClienteControllerTest extends ControllerTest {
     }
 
     @Test
+    public void deve_RetornarStatus400_QuandoSenhaInvalida() throws Exception {
+        ClienteCadastroDtoBuilder clienteCadastroDtoBuilder = new ClienteCadastroDtoBuilder()
+                .comCpf("48313525606")
+                .comDataNascimento("1990-01-01")
+                .comEmail("teste@email.com")
+                .comNome("Teste")
+                .comSenha("1234567");
+        ClienteDto clienteDto = clienteCadastroDtoBuilder
+                .build();
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post(uri)
+                .content(mapToJson(clienteDto))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is(400));
+
+        clienteCadastroDtoBuilder.comSenha("12345678901234567890123");
+        clienteDto = clienteCadastroDtoBuilder.build();
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post(uri)
+                .content(mapToJson(clienteDto))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is(400));
+    }
+
+    @Test
+    public void deve_RetornarStatus400_QuandoSenhaNull() throws Exception {
+        ClienteDto clienteDto = new ClienteCadastroDtoBuilder()
+                .comCpf("48313525606")
+                .comDataNascimento("1990-01-01")
+                .comEmail("teste@email.com")
+                .comNome("Teste")
+                .comSenha(null)
+                .build();
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post(uri)
+                .content(mapToJson(clienteDto))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is(400));
+    }
+
+    @Test
     public void deve_AlterarNascimentoeNome_QuandoAtualizaCliente() throws Exception {
         ClienteDto clienteDto = new ClienteDtoBuilder()
                 .comCpf("94587191000")
