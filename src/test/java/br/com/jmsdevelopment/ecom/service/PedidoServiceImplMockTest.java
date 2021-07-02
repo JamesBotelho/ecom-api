@@ -8,6 +8,7 @@ import br.com.jmsdevelopment.ecom.dto.cliente.ClientePedidoDto;
 import br.com.jmsdevelopment.ecom.dto.pedido.ItemPedidoDto;
 import br.com.jmsdevelopment.ecom.dto.pedido.PedidoDto;
 import br.com.jmsdevelopment.ecom.helpers.exception.ClienteNaoEncontradoException;
+import br.com.jmsdevelopment.ecom.helpers.exception.PaginacaoInvalidaException;
 import br.com.jmsdevelopment.ecom.helpers.exception.PedidoInvalidoException;
 import br.com.jmsdevelopment.ecom.helpers.exception.PedidoNaoEncontradoException;
 import br.com.jmsdevelopment.ecom.mappers.PedidoMapper;
@@ -16,10 +17,14 @@ import br.com.jmsdevelopment.ecom.model.Pedido;
 import br.com.jmsdevelopment.ecom.model.Produto;
 import br.com.jmsdevelopment.ecom.repository.PedidoItemRepository;
 import br.com.jmsdevelopment.ecom.repository.PedidoRepository;
+import br.com.jmsdevelopment.ecom.service.validacao.ValidaNumeroItensPaginacao;
+import br.com.jmsdevelopment.ecom.service.validacao.Validacao;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.mockito.*;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -45,6 +50,7 @@ class PedidoServiceImplMockTest {
 
     private PedidoMapper pedidoMapper;
     private PedidoService pedidoService;
+    private Validacao<Pageable> validaPaginacao;
 
     private Pedido pedidoBanco;
     private PedidoDto pedidoRetornoEsperadoDto;
@@ -55,7 +61,8 @@ class PedidoServiceImplMockTest {
     public void beforeEach() {
         MockitoAnnotations.openMocks(this);
         this.pedidoMapper = Mappers.getMapper(PedidoMapper.class);
-        this.pedidoService = new PedidoServiceImpl(produtoService, clienteService, pedidoRepository, pedidoMapper, pedidoItemRepository);
+        this.validaPaginacao = new ValidaNumeroItensPaginacao();
+        this.pedidoService = new PedidoServiceImpl(produtoService, clienteService, pedidoRepository, pedidoMapper, pedidoItemRepository, validaPaginacao);
         pedidoRetornoEsperadoDto = new PedidoDtoBuilder()
                 .comId(1L)
                 .comValorTotal(new BigDecimal("100"))
@@ -149,5 +156,10 @@ class PedidoServiceImplMockTest {
         assertThrows(PedidoInvalidoException.class, () -> pedidoService.salvaPedido(pedidoRetornoEsperadoDto));
 
         Mockito.verifyNoInteractions(pedidoRepository);
+    }
+
+    @Test
+    public void deve_lancarPaginacaoInvalidaException_QuandoUltrapassa100ItensDeListagem() {
+        assertThrows(PaginacaoInvalidaException.class, () -> pedidoService.pedidosDoCliente(1L, PageRequest.of(0, 101)));
     }
 }

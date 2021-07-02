@@ -10,7 +10,10 @@ import br.com.jmsdevelopment.ecom.model.ItemPedido;
 import br.com.jmsdevelopment.ecom.model.Pedido;
 import br.com.jmsdevelopment.ecom.repository.PedidoItemRepository;
 import br.com.jmsdevelopment.ecom.repository.PedidoRepository;
+import br.com.jmsdevelopment.ecom.service.validacao.Validacao;
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,6 +32,9 @@ public class PedidoServiceImpl implements PedidoService {
 	private final PedidoRepository pedidoRepository;
 	private final PedidoMapper pedidoMapper;
 	private final PedidoItemRepository pedidoItemRepository;
+	@NonNull
+	@Qualifier("valida-numero-itens-paginacao")
+	private final Validacao<Pageable> validaQuantidadeItensPaginacao;
 
 	@Override
 	public PedidoDto pedidoPorId(Long id) {
@@ -59,6 +65,7 @@ public class PedidoServiceImpl implements PedidoService {
 	@Transactional
 	@Override
 	public Page<PedidoDto> pedidosDoCliente(Long idCliente, Pageable pageable) {
+		validaQuantidadeItensPaginacao.validar(pageable);
 		validaCliente(idCliente);
 		Page<Pedido> pedidosCliente = pedidoRepository.findByClienteId(idCliente, pageable);
 

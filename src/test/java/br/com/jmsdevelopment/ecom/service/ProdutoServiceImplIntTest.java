@@ -6,7 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,7 +22,7 @@ class ProdutoServiceImplIntTest {
 
     @Test
     public void deve_RetornarUmProduto_QuandoCategoriaPossuiUmProdutoCadastrado() {
-        Page<ProdutoDto> produtoDtoPage = produtoService.produtosPorCategoria(1L, Pageable.unpaged());
+        Page<ProdutoDto> produtoDtoPage = produtoService.produtosPorCategoria(1L, PageRequest.of(0, 100, Sort.by("id")));
 
         assertEquals(1, produtoDtoPage.getTotalElements());
 
@@ -32,6 +34,6 @@ class ProdutoServiceImplIntTest {
 
     @Test
     public void deve_RetornarProdutoNaoEncontradoException_QuandoNaoHaProdutosCadastradosNaCategoria() {
-        assertThrows(ProdutoNaoEncontradoException.class, () -> produtoService.produtosPorCategoria(2L, Pageable.unpaged()));
+        assertThrows(ProdutoNaoEncontradoException.class, () -> produtoService.produtosPorCategoria(2L, PageRequest.of(0, 100, Sort.by("id"))));
     }
 }
