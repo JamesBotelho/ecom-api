@@ -42,7 +42,6 @@ public class ClienteServiceImpl implements ClienteService {
 		validacaoCpf.validar(cliente.getCpf());
 		validacaoEmail.validar(cliente.getEmail());
 
-		cliente.setId(null);
 		Cliente clienteSalvo = clienteRepository.save(cliente);
 		
 		return clienteMapper.toClienteDto(clienteSalvo);
