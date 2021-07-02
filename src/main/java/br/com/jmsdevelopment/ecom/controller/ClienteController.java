@@ -43,9 +43,9 @@ public class ClienteController {
 
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("{id}/pedidos")
-	public Page<PedidoDto> pedidosCliente(@PathVariable Long idCliente,
+	public Page<PedidoDto> pedidosCliente(@PathVariable Long id,
 										  @PageableDefault(sort="dataHora", direction = Sort.Direction.ASC) Pageable pageable) {
-		return pedidoService.pedidosDoCliente(idCliente, pageable);
+		return pedidoService.pedidosDoCliente(id, pageable);
 	}
 	
 	@PostMapping
