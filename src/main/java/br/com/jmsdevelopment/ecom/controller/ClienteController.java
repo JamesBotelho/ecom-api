@@ -26,6 +26,8 @@ import br.com.jmsdevelopment.ecom.dto.cliente.ClienteDto;
 import br.com.jmsdevelopment.ecom.service.ClienteService;
 import lombok.AllArgsConstructor;
 
+import javax.validation.Valid;
+
 @AllArgsConstructor
 @RestController
 @RequestMapping("/cliente")
@@ -41,13 +43,13 @@ public class ClienteController {
 
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("{id}/pedidos")
-	public Page<PedidoDto> pedidosCliente(@PathVariable Long idCliente,
+	public Page<PedidoDto> pedidosCliente(@PathVariable Long id,
 										  @PageableDefault(sort="dataHora", direction = Sort.Direction.ASC) Pageable pageable) {
-		return pedidoService.pedidosDoCliente(idCliente, pageable);
+		return pedidoService.pedidosDoCliente(id, pageable);
 	}
 	
 	@PostMapping
-	public ResponseEntity<ClienteDto> cadastrarCliente(@RequestBody ClienteCadastroDto clienteCadastroDto, UriComponentsBuilder uriBuilder) {
+	public ResponseEntity<ClienteDto> cadastrarCliente(@Valid @RequestBody ClienteCadastroDto clienteCadastroDto, UriComponentsBuilder uriBuilder) {
 		ClienteDto clienteCadastrado = clienteService.cadastrarUsuario(clienteCadastroDto);
 		URI uri = uriBuilder.path("/cliente/{id}").buildAndExpand(clienteCadastrado.getId()).toUri();
 		

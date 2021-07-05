@@ -2,6 +2,7 @@ package br.com.jmsdevelopment.ecom.builder;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 
 import br.com.jmsdevelopment.ecom.model.Categoria;
 import br.com.jmsdevelopment.ecom.model.Produto;
@@ -57,7 +58,7 @@ public class ProdutoBuilder {
 	}
 	
 	public Produto build() {
-		Categoria categoria = new Categoria(idCategoria, nomeCategoria, Arrays.asList());
+		Categoria categoria = new Categoria(idCategoria, nomeCategoria, Collections.emptyList());
 		return new Produto(id, nome, descricao, urlImagem, preco, precoPromocional, categoria);
 	}
 	

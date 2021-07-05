@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +17,6 @@ import org.mockito.MockitoAnnotations;
 import br.com.jmsdevelopment.ecom.builder.ProdutoBuilder;
 import br.com.jmsdevelopment.ecom.dto.categoria.CategoriaDto;
 import br.com.jmsdevelopment.ecom.helpers.exception.CategoriaNaoEncontradaException;
-import br.com.jmsdevelopment.ecom.helpers.exception.ProdutoNaoEncontradoException;
 import br.com.jmsdevelopment.ecom.mappers.CategoriaMapper;
 import br.com.jmsdevelopment.ecom.mappers.ProdutoMapper;
 import br.com.jmsdevelopment.ecom.model.Categoria;

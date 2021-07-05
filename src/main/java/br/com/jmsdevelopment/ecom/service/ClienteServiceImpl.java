@@ -1,7 +1,5 @@
 package br.com.jmsdevelopment.ecom.service;
 
-import org.springframework.stereotype.Service;
-
 import br.com.jmsdevelopment.ecom.dto.cliente.ClienteAlteraSenhaDto;
 import br.com.jmsdevelopment.ecom.dto.cliente.ClienteCadastroDto;
 import br.com.jmsdevelopment.ecom.dto.cliente.ClienteDto;
@@ -9,7 +7,11 @@ import br.com.jmsdevelopment.ecom.helpers.exception.ClienteNaoEncontradoExceptio
 import br.com.jmsdevelopment.ecom.mappers.ClienteMapper;
 import br.com.jmsdevelopment.ecom.model.Cliente;
 import br.com.jmsdevelopment.ecom.repository.ClienteRepository;
+import br.com.jmsdevelopment.ecom.service.validacao.Validacao;
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
 @Service
@@ -17,9 +19,15 @@ public class ClienteServiceImpl implements ClienteService {
 	
 	private final ClienteRepository clienteRepository;
 	private final ClienteMapper clienteMapper;
+	@NonNull
+	@Qualifier("valida-email")
+	private final Validacao<String> validacaoEmail;
+	@NonNull
+	@Qualifier("valida-cpf")
+	private final Validacao<String> validacaoCpf;
 	
 	private Cliente pesquisaPorId(Long id) {
-		return clienteRepository.findById(id).orElseThrow(() -> new ClienteNaoEncontradoException());
+		return clienteRepository.findById(id).orElseThrow(ClienteNaoEncontradoException::new);
 	}
 	
 	@Override
@@ -30,7 +38,10 @@ public class ClienteServiceImpl implements ClienteService {
 	@Override
 	public ClienteDto cadastrarUsuario(ClienteCadastroDto clienteCadastroDto) {
 		Cliente cliente = clienteMapper.fromClienteCadastroToModel(clienteCadastroDto);
-		cliente.setId(null);
+
+		validacaoCpf.validar(cliente.getCpf());
+		validacaoEmail.validar(cliente.getEmail());
+
 		Cliente clienteSalvo = clienteRepository.save(cliente);
 		
 		return clienteMapper.toClienteDto(clienteSalvo);

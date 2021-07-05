@@ -1,6 +1,6 @@
 package br.com.jmsdevelopment.ecom.builder;
 
-import br.com.jmsdevelopment.ecom.dto.cliente.ClienteDto;
+import br.com.jmsdevelopment.ecom.dto.cliente.ClientePedidoDto;
 import br.com.jmsdevelopment.ecom.dto.pedido.ItemPedidoDto;
 import br.com.jmsdevelopment.ecom.dto.pedido.PedidoDto;
 
@@ -16,7 +16,7 @@ public class PedidoDtoBuilder {
     private List<String> nomeProduto;
     private List<Integer> quantidadeProduto;
     private List<BigDecimal> valorProduto;
-    private ClienteDto clienteDto;
+    private ClientePedidoDto clienteDto;
 
     public PedidoDtoBuilder() {
         this.idProduto = new ArrayList<>();
@@ -48,8 +48,8 @@ public class PedidoDtoBuilder {
         return this;
     }
 
-    public PedidoDtoBuilder comCliente(Long id, String nome, String cpf, String email, String dataNascimento) {
-        this.clienteDto = new ClienteDto(id, nome, cpf, email, dataNascimento);
+    public PedidoDtoBuilder comCliente(Long id, String nome, String email) {
+        this.clienteDto = new ClientePedidoDto(id, nome, email);
         return this;
     }
 

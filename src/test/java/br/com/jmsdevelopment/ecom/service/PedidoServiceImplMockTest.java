@@ -4,20 +4,27 @@ import br.com.jmsdevelopment.ecom.builder.PedidoBuilder;
 import br.com.jmsdevelopment.ecom.builder.PedidoDtoBuilder;
 import br.com.jmsdevelopment.ecom.builder.ProdutoBuilder;
 import br.com.jmsdevelopment.ecom.dto.cliente.ClienteDto;
+import br.com.jmsdevelopment.ecom.dto.cliente.ClientePedidoDto;
 import br.com.jmsdevelopment.ecom.dto.pedido.ItemPedidoDto;
 import br.com.jmsdevelopment.ecom.dto.pedido.PedidoDto;
 import br.com.jmsdevelopment.ecom.helpers.exception.ClienteNaoEncontradoException;
+import br.com.jmsdevelopment.ecom.helpers.exception.PaginacaoInvalidaException;
 import br.com.jmsdevelopment.ecom.helpers.exception.PedidoInvalidoException;
 import br.com.jmsdevelopment.ecom.helpers.exception.PedidoNaoEncontradoException;
 import br.com.jmsdevelopment.ecom.mappers.PedidoMapper;
 import br.com.jmsdevelopment.ecom.mappers.ProdutoMapper;
 import br.com.jmsdevelopment.ecom.model.Pedido;
 import br.com.jmsdevelopment.ecom.model.Produto;
+import br.com.jmsdevelopment.ecom.repository.PedidoItemRepository;
 import br.com.jmsdevelopment.ecom.repository.PedidoRepository;
+import br.com.jmsdevelopment.ecom.service.validacao.ValidaNumeroItensPaginacao;
+import br.com.jmsdevelopment.ecom.service.validacao.Validacao;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.mockito.*;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -35,11 +42,15 @@ class PedidoServiceImplMockTest {
     @Mock
     private PedidoRepository pedidoRepository;
 
+    @Mock
+    private PedidoItemRepository pedidoItemRepository;
+
     @Captor
     private ArgumentCaptor<Pedido> pedidoArgumentCaptor;
 
     private PedidoMapper pedidoMapper;
     private PedidoService pedidoService;
+    private Validacao<Pageable> validaPaginacao;
 
     private Pedido pedidoBanco;
     private PedidoDto pedidoRetornoEsperadoDto;
@@ -50,13 +61,14 @@ class PedidoServiceImplMockTest {
     public void beforeEach() {
         MockitoAnnotations.openMocks(this);
         this.pedidoMapper = Mappers.getMapper(PedidoMapper.class);
-        this.pedidoService = new PedidoServiceImpl(produtoService, clienteService, pedidoRepository, pedidoMapper);
+        this.validaPaginacao = new ValidaNumeroItensPaginacao();
+        this.pedidoService = new PedidoServiceImpl(produtoService, clienteService, pedidoRepository, pedidoMapper, pedidoItemRepository, validaPaginacao);
         pedidoRetornoEsperadoDto = new PedidoDtoBuilder()
                 .comId(1L)
                 .comValorTotal(new BigDecimal("100"))
                 .comItemPedido(1L, "Produto um", 1, new BigDecimal(50))
                 .comItemPedido(2L, "Produto dois", 1, new BigDecimal(50))
-                .comCliente(1L, "Nome cliente", null, "email@example.com", null)
+                .comCliente(1L, "Nome cliente", "email@example.com")
                 .comDataHora("2021-05-31T21:00:00")
                 .build();
         pedidoBanco = new PedidoBuilder()
@@ -98,7 +110,7 @@ class PedidoServiceImplMockTest {
     @Test
     public void naoDeve_chamarPersistenciaNoBanco_QuandoClienteEInvalido() {
         PedidoDto pedidoDto = Mockito.mock(PedidoDto.class);
-        ClienteDto clienteDto = Mockito.mock(ClienteDto.class);
+        ClientePedidoDto clienteDto = Mockito.mock(ClientePedidoDto.class);
 
         Mockito.when(pedidoDto.getCliente()).thenReturn(clienteDto);
         Mockito.when(clienteDto.getId()).thenReturn(1L);
@@ -115,16 +127,17 @@ class PedidoServiceImplMockTest {
 
         Mockito.when(produtoService.recuperaProdutoPorId(1L)).thenReturn(produtoMapper.toDto(produtoBancoUm));
         Mockito.when(produtoService.recuperaProdutoPorId(2L)).thenReturn(produtoMapper.toDto(produtoBancoDois));
+        Mockito.when(pedidoRepository.saveAndFlush(Mockito.any(Pedido.class))).thenReturn(pedidoBanco);
 
         pedidoService.salvaPedido(pedidoRetornoEsperadoDto);
 
-        Mockito.verify(pedidoRepository).save(pedidoArgumentCaptor.capture());
+        Mockito.verify(pedidoRepository).saveAndFlush(pedidoArgumentCaptor.capture());
 
         BigDecimal valorTotalCalculado = pedidoArgumentCaptor.getValue().getValorTotal();
 
         assertEquals(new BigDecimal(100), valorTotalCalculado);
 
-        Mockito.verify(pedidoRepository).save(Mockito.any(Pedido.class));
+        Mockito.verify(pedidoRepository).saveAndFlush(Mockito.any(Pedido.class));
     }
 
     @Test
@@ -143,5 +156,10 @@ class PedidoServiceImplMockTest {
         assertThrows(PedidoInvalidoException.class, () -> pedidoService.salvaPedido(pedidoRetornoEsperadoDto));
 
         Mockito.verifyNoInteractions(pedidoRepository);
+    }
+
+    @Test
+    public void deve_lancarPaginacaoInvalidaException_QuandoUltrapassa100ItensDeListagem() {
+        assertThrows(PaginacaoInvalidaException.class, () -> pedidoService.pedidosDoCliente(1L, PageRequest.of(0, 101)));
     }
 }

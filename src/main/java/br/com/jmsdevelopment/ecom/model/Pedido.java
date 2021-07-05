@@ -21,10 +21,10 @@ public class Pedido {
 	private Long id;
 	@Column(name = "VALOR_TOTAL", nullable = false, precision = 2)
 	private BigDecimal valorTotal;
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "ID_CLIENTE")
 	private Cliente cliente;
-	@OneToMany(mappedBy = "pedido", cascade = CascadeType.PERSIST)
+	@OneToMany(mappedBy = "pedido")
 	private List<ItemPedido> itens;
 	@Column(name = "DATA_HORA", nullable = false)
 	private LocalDateTime dataHora;

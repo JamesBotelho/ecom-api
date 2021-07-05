@@ -1,30 +1,29 @@
 package br.com.jmsdevelopment.ecom.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
+import br.com.jmsdevelopment.ecom.builder.ProdutoBuilder;
+import br.com.jmsdevelopment.ecom.builder.ProdutoDtoBuilder;
+import br.com.jmsdevelopment.ecom.dto.produto.ProdutoDto;
+import br.com.jmsdevelopment.ecom.helpers.exception.PaginacaoInvalidaException;
+import br.com.jmsdevelopment.ecom.helpers.exception.ProdutoNaoEncontradoException;
+import br.com.jmsdevelopment.ecom.mappers.ProdutoMapper;
+import br.com.jmsdevelopment.ecom.model.Produto;
+import br.com.jmsdevelopment.ecom.repository.ProdutoRepository;
+import br.com.jmsdevelopment.ecom.service.validacao.ValidaNumeroItensPaginacao;
+import br.com.jmsdevelopment.ecom.service.validacao.Validacao;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.*;
 
-import br.com.jmsdevelopment.ecom.builder.ProdutoBuilder;
-import br.com.jmsdevelopment.ecom.builder.ProdutoDtoBuilder;
-import br.com.jmsdevelopment.ecom.dto.produto.ProdutoDto;
-import br.com.jmsdevelopment.ecom.helpers.exception.ProdutoNaoEncontradoException;
-import br.com.jmsdevelopment.ecom.mappers.ProdutoMapper;
-import br.com.jmsdevelopment.ecom.model.Produto;
-import br.com.jmsdevelopment.ecom.repository.ProdutoRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ProdutoServiceImplMockTest {
 
@@ -41,10 +40,15 @@ class ProdutoServiceImplMockTest {
 	private ProdutoDto produtoDto;
 	
 	private List<Produto> produtosEntity;
+
+	private Validacao<Pageable> validaPaginacao;
+
+	private Pageable pageable;
 	
 	@BeforeEach
 	public void beforeEach() {
 		MockitoAnnotations.openMocks(this);
+		this.validaPaginacao = new ValidaNumeroItensPaginacao();
 		produto = new ProdutoBuilder()
 				.comId(1L)
 				.comNome("Caixa de fósforo")
@@ -62,17 +66,18 @@ class ProdutoServiceImplMockTest {
 				.comPreco(new BigDecimal("200"))
 				.comPrecoPromocional(null)
 				.build();
-		produtosEntity = Arrays.asList(produto);
+		produtosEntity = Collections.singletonList(produto);
 		Mockito.when(produtoRepository.findAll()).thenReturn(produtosEntity);
 		
-		produtoService = new ProdutoServiceImpl(produtoRepository, produtoMapper);
+		produtoService = new ProdutoServiceImpl(produtoRepository, produtoMapper, validaPaginacao);
+		pageable = PageRequest.of(0, 100, Sort.by("id"));
 	}
 
 	@Test
 	public void deve_ChamarListagemDoBanco_QuandoListaTodosProdutos() {
-		Mockito.when(produtoRepository.findAll(Pageable.unpaged())).thenReturn(new PageImpl<>(Collections.singletonList(produto)));
-		produtoService.todosOsProdutos(Pageable.unpaged());
-		Mockito.verify(produtoRepository).findAll(Pageable.unpaged());
+		Mockito.when(produtoRepository.findAll(pageable)).thenReturn(new PageImpl<>(Collections.singletonList(produto)));
+		produtoService.todosOsProdutos(pageable);
+		Mockito.verify(produtoRepository).findAll(pageable);
 	}
 	
 	@Test
@@ -87,24 +92,24 @@ class ProdutoServiceImplMockTest {
 	
 	@Test
 	public void deve_lancarProdutoNaoEncontradoException_QuandoListaProdutosSemTerProdutosCadastrado() {
-		Mockito.when(produtoRepository.findAll(Pageable.unpaged())).thenReturn(Page.empty());
+		Mockito.when(produtoRepository.findAll(pageable)).thenReturn(Page.empty());
 		
-		assertThrows(ProdutoNaoEncontradoException.class, () -> produtoService.todosOsProdutos(Pageable.unpaged()));
+		assertThrows(ProdutoNaoEncontradoException.class, () -> produtoService.todosOsProdutos(pageable));
 	}
 	
 	@Test
 	public void deve_lancarProdutoNaoEncontradoException_QuandoRecuperaProdutoComIdInexistente() {
-		Mockito.when(produtoRepository.findById(2L)).thenReturn(Optional.ofNullable(null));
+		Mockito.when(produtoRepository.findById(2L)).thenReturn(Optional.empty());
 		
 		assertThrows(ProdutoNaoEncontradoException.class, () -> produtoService.recuperaProdutoPorId(2L));
 	}
 
 	@Test
 	public void deve_RetornarUmProduto_QuandoPesquisaPorCategoria() {
-		Mockito.when(produtoRepository.findByCategoriaId(1L, Pageable.unpaged())).thenReturn(new PageImpl<>(Collections.singletonList(produto)));
+		Mockito.when(produtoRepository.findByCategoriaId(1L, pageable)).thenReturn(new PageImpl<>(Collections.singletonList(produto)));
 		Mockito.when(produtoMapper.toDto(produto)).thenReturn(produtoDto);
 
-		Page<ProdutoDto> produtosRetornados = produtoService.produtosPorCategoria(1L, Pageable.unpaged());
+		Page<ProdutoDto> produtosRetornados = produtoService.produtosPorCategoria(1L, pageable);
 
 		assertEquals(1, produtosRetornados.getTotalElements());
 		assertEquals(1, produtosRetornados.getTotalPages());
@@ -116,8 +121,13 @@ class ProdutoServiceImplMockTest {
 
 	@Test
 	public void deve_lancarProdutoNaoEncontradoExecption_QuandoNaoHaProdutosCadastradosNaCategoria() {
-		Mockito.when(produtoRepository.findByCategoriaId(1L, Pageable.unpaged())).thenReturn(Page.empty());
+		Mockito.when(produtoRepository.findByCategoriaId(1L, pageable)).thenReturn(Page.empty());
 
-		assertThrows(ProdutoNaoEncontradoException.class, () -> produtoService.produtosPorCategoria(1L, Pageable.unpaged()));
+		assertThrows(ProdutoNaoEncontradoException.class, () -> produtoService.produtosPorCategoria(1L, pageable));
+	}
+
+	@Test
+	public void deve_lancarPaginacaoInvalidaException_QuandoUltrapassa100ItensDeListagem() {
+		assertThrows(PaginacaoInvalidaException.class, () -> produtoService.todosOsProdutos(PageRequest.of(0, 101)));
 	}
 }

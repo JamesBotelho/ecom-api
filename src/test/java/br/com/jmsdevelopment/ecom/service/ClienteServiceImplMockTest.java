@@ -6,8 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Optional;
 
+import br.com.jmsdevelopment.ecom.service.validacao.Validacao;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -28,9 +30,11 @@ class ClienteServiceImplMockTest {
 	
 	@Mock
 	private ClienteRepository clienteRepository;
-	
-	@Mock
+
 	private ClienteMapper clienteMapper;
+
+	@Mock
+	private Validacao<String> validacao;
 	
 	@Captor
 	public ArgumentCaptor<Cliente> clienteCaptor;
@@ -42,6 +46,7 @@ class ClienteServiceImplMockTest {
 	@BeforeEach
 	public void beforeEach() {
 		MockitoAnnotations.openMocks(this);
+		clienteMapper = Mappers.getMapper(ClienteMapper.class);
 		cliente = new ClienteBuilder()
 				.comId(1L)
 				.comNome("James")
@@ -59,8 +64,7 @@ class ClienteServiceImplMockTest {
 				.comDataNascimento("1990-01-01")
 				.build();
 		Mockito.when(clienteRepository.findById(1L)).thenReturn(Optional.ofNullable(cliente));
-		Mockito.when(clienteMapper.toClienteDto(cliente)).thenReturn(clienteDto);
-		clienteService = new ClienteServiceImpl(clienteRepository, clienteMapper);
+		clienteService = new ClienteServiceImpl(clienteRepository, clienteMapper, validacao, validacao);
 	}
 	
 	@Test
@@ -72,7 +76,6 @@ class ClienteServiceImplMockTest {
 	
 	@Test
 	public void deve_CadastrarClienteComIdNulo_QuandoChamaRepository() {
-		Mockito.when(clienteMapper.fromClienteCadastroToModel(Mockito.any(ClienteCadastroDto.class))).thenReturn(cliente);
 		
 		clienteService.cadastrarUsuario(new ClienteCadastroDto());
 		

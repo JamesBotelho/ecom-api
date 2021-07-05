@@ -35,4 +35,9 @@ public class ItemPedido {
 	@ManyToOne
 	@JoinColumn(name = "ID_PEDIDO", nullable = false)
 	private Pedido pedido;
+
+	public void setIdPedido(Long idPedido) {
+		pedido = new Pedido();
+		pedido.setId(idPedido);
+	}
 }

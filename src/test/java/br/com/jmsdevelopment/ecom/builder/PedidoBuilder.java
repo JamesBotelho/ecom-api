@@ -1,16 +1,13 @@
 package br.com.jmsdevelopment.ecom.builder;
 
-import br.com.jmsdevelopment.ecom.dto.cliente.ClienteDto;
 import br.com.jmsdevelopment.ecom.model.Cliente;
 import br.com.jmsdevelopment.ecom.model.ItemPedido;
 import br.com.jmsdevelopment.ecom.model.Pedido;
 import br.com.jmsdevelopment.ecom.model.Produto;
-import org.springframework.security.core.parameters.P;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 

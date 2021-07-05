@@ -11,10 +11,6 @@ import br.com.jmsdevelopment.ecom.model.Pedido;
 
 @Mapper(componentModel = "spring")
 public interface PedidoMapper {
-	@Mappings({
-		@Mapping(target = "cliente.cpf", ignore = true),
-		@Mapping(target = "cliente.dataNascimento", ignore = true)
-	})
 	PedidoDto toPedidoDto(Pedido pedido);
 	
 	@Mappings({
@@ -25,9 +21,7 @@ public interface PedidoMapper {
 	
 	@Mappings({
 		@Mapping(target = "id", ignore = true),
-		@Mapping(target = "cliente.cpf", ignore = true),
 		@Mapping(target = "cliente.email", ignore = true),
-		@Mapping(target = "cliente.dataNascimento", ignore = true),
 		@Mapping(target = "cliente.nome", ignore = true),
 		@Mapping(target = "dataHora", ignore = true)
 	})

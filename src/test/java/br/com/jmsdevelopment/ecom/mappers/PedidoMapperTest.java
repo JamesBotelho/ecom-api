@@ -1,6 +1,6 @@
 package br.com.jmsdevelopment.ecom.mappers;
 
-import br.com.jmsdevelopment.ecom.dto.cliente.ClienteDto;
+import br.com.jmsdevelopment.ecom.dto.cliente.ClientePedidoDto;
 import br.com.jmsdevelopment.ecom.dto.pedido.ItemPedidoDto;
 import br.com.jmsdevelopment.ecom.dto.pedido.PedidoDto;
 import br.com.jmsdevelopment.ecom.model.Cliente;
@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -36,7 +37,7 @@ class PedidoMapperTest {
 
     @Test
     public void deve_RetornarClienteApenasComId_QuandoTransformaPedidoDtoEmEntity() {
-        ClienteDto clienteDto = new ClienteDto(1L, "nome", "cpf", "email", "nascimento");
+        ClientePedidoDto clienteDto = new ClientePedidoDto(1L, "nome", "email");
         PedidoDto pedidoDto = new PedidoDto(1L, new BigDecimal(50), null, clienteDto, dataHora);
         Pedido pedidoEntity = pedidoMapper.toPedidoEntity(pedidoDto);
 
@@ -54,7 +55,7 @@ class PedidoMapperTest {
         ItemPedidoDto itemPedidoDtoUm = new ItemPedidoDto(1L, "nomeProdutoUm", 1, new BigDecimal(50));
         ItemPedidoDto itemPedidoDtoDois = new ItemPedidoDto(2L, "nomeProdutoDois", 1, new BigDecimal(100));
         List<ItemPedidoDto> itensPedidoDto = Arrays.asList(itemPedidoDtoUm, itemPedidoDtoDois);
-        ClienteDto clienteDto = new ClienteDto(1L, "nome", "cpf", "email", "nascimento");
+        ClientePedidoDto clienteDto = new ClientePedidoDto(1L, "nome", "email");
         PedidoDto pedidoDto = new PedidoDto(1L, new BigDecimal(50), itensPedidoDto, clienteDto, dataHora);
 
         Pedido pedidoEntity = pedidoMapper.toPedidoEntity(pedidoDto);
@@ -88,7 +89,7 @@ class PedidoMapperTest {
         Cliente cliente = new Cliente(1L, "Teste", "48313525606", "teste@email.com", LocalDate.of(1995, Month.JULY, 26), "1234567890", null);
         Produto produto = new Produto(1L, "Nome Produto", "Descrição Produto", "http://url_imagem", new BigDecimal(50), null, null);
         ItemPedido itemPedidoUm = new ItemPedido(1L, 2, new BigDecimal(50), produto, null);
-        Pedido pedido = new Pedido(1L, valorTotal, cliente, Arrays.asList(itemPedidoUm), LocalDateTime.parse(dataHora));
+        Pedido pedido = new Pedido(1L, valorTotal, cliente, Collections.singletonList(itemPedidoUm), LocalDateTime.parse(dataHora));
 
         PedidoDto pedidoConvertidoDto = pedidoMapper.toPedidoDto(pedido);
         List<ItemPedidoDto> itensConvertidoDto = pedidoConvertidoDto.getItens();
@@ -104,12 +105,10 @@ class PedidoMapperTest {
         assertEquals(2, itemPedidoConvertidoDto.getQuantidade());
         assertEquals(new BigDecimal(50), itemPedidoConvertidoDto.getValorProduto());
 
-        ClienteDto clienteConvertidoDto = pedidoConvertidoDto.getCliente();
+        ClientePedidoDto clienteConvertidoDto = pedidoConvertidoDto.getCliente();
 
         assertEquals(1L, clienteConvertidoDto.getId());
         assertEquals("Teste", clienteConvertidoDto.getNome());
         assertEquals("teste@email.com", clienteConvertidoDto.getEmail());
-        assertNull(clienteConvertidoDto.getCpf());
-        assertNull(clienteConvertidoDto.getDataNascimento());
     }
 }
