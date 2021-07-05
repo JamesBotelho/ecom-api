@@ -2,6 +2,7 @@ package br.com.jmsdevelopment.ecom.service;
 
 import br.com.jmsdevelopment.ecom.dto.produto.ProdutoDto;
 import br.com.jmsdevelopment.ecom.helpers.exception.ProdutoNaoEncontradoException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,10 +20,17 @@ class ProdutoServiceImplIntTest {
 
     @Autowired
     private ProdutoService produtoService;
+    
+    private Pageable pageable;
+    
+    @BeforeEach
+    public void beforeEach() {
+        pageable = PageRequest.of(0, 100, Sort.by("id"));
+    }
 
     @Test
     public void deve_RetornarUmProduto_QuandoCategoriaPossuiUmProdutoCadastrado() {
-        Page<ProdutoDto> produtoDtoPage = produtoService.produtosPorCategoria(1L, PageRequest.of(0, 100, Sort.by("id")));
+        Page<ProdutoDto> produtoDtoPage = produtoService.produtosPorCategoria(1L, pageable);
 
         assertEquals(1, produtoDtoPage.getTotalElements());
 
@@ -34,6 +42,6 @@ class ProdutoServiceImplIntTest {
 
     @Test
     public void deve_RetornarProdutoNaoEncontradoException_QuandoNaoHaProdutosCadastradosNaCategoria() {
-        assertThrows(ProdutoNaoEncontradoException.class, () -> produtoService.produtosPorCategoria(2L, PageRequest.of(0, 100, Sort.by("id"))));
+        assertThrows(ProdutoNaoEncontradoException.class, () -> produtoService.produtosPorCategoria(2L, pageable));
     }
 }
