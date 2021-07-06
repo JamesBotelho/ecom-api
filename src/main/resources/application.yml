@@ -8,3 +8,8 @@ spring:
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.jdbc.Driver
     initialization-mode: never
+  data:
+    mongodb:
+      host: 'localhost'
+      port: 27017
+      database: 'test'
