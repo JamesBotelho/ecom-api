@@ -1,7 +1,8 @@
 package br.com.jmsdevelopment.ecom.service;
 
+import br.com.jmsdevelopment.ecom.dto.carrinho.CarrinhoRetornoDto;
 import br.com.jmsdevelopment.ecom.dto.carrinho.ItensCarrinhoDto;
-import br.com.jmsdevelopment.ecom.dto.produto.ProdutoDto;
+import br.com.jmsdevelopment.ecom.helpers.exception.CarrinhoNaoEncontradoException;
 import br.com.jmsdevelopment.ecom.mappers.CarrinhoMapper;
 import br.com.jmsdevelopment.ecom.mappers.ProdutoMapper;
 import br.com.jmsdevelopment.ecom.model.Carrinho;
@@ -35,19 +36,19 @@ public class CarrinhoServiceImpl implements CarrinhoService {
     }
 
     @Override
-    public List<ProdutoDto> recuperaCarrinho(Long idCliente) {
-        Carrinho carrinho = carrinhoRepository.findById(idCliente).orElseThrow(() -> new RuntimeException("Não há carrinho para este cliente"));
+    public List<CarrinhoRetornoDto> recuperaCarrinho(Long idCliente) {
+        Carrinho carrinho = carrinhoRepository.findById(idCliente).orElseThrow(CarrinhoNaoEncontradoException::new);
 
         List<ItemCarrinho> itensCarrinho = carrinho.getItens();
 
-        List<Produto> produtos = new ArrayList<>();
+        List<CarrinhoRetornoDto> itensCarrinhoRetorno = new ArrayList<>();
 
         itensCarrinho.forEach(item -> {
-            Optional<Produto> produto = produtoRepository.findById(item.getIdProduto());
-            produto.ifPresent(produtos::add);
+            Optional<Produto> produtoOptional = produtoRepository.findById(item.getIdProduto());
+            produtoOptional.ifPresent(produto -> itensCarrinhoRetorno.add(new CarrinhoRetornoDto(produtoMapper.toDto(produto), item.getQuantidade())));
         });
 
-        return produtos.stream().map(produtoMapper::toDto).collect(Collectors.toList());
+        return itensCarrinhoRetorno;
     }
 
     @Override

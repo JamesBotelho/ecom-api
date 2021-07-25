@@ -1,6 +1,7 @@
 package br.com.jmsdevelopment.ecom.service;
 
 import br.com.jmsdevelopment.ecom.BaseIntTest;
+import br.com.jmsdevelopment.ecom.dto.carrinho.CarrinhoRetornoDto;
 import br.com.jmsdevelopment.ecom.dto.carrinho.ItemCarrinhoDto;
 import br.com.jmsdevelopment.ecom.dto.carrinho.ItensCarrinhoDto;
 import br.com.jmsdevelopment.ecom.dto.produto.ProdutoDto;
@@ -8,7 +9,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
 
 import java.util.Collections;
 import java.util.List;
@@ -32,14 +32,16 @@ class CarrinhoServiceImplIntIntTest extends BaseIntTest {
     }
 
     @Test
-    public void deve_retornarProdutoComIdCorreto_QuandoRecuperaCarrinho() {
-        List<ProdutoDto> produtosDto = carrinhoService.recuperaCarrinho(1L);
+    public void deve_retornarProdutoComIdEQuantidadeCorretos_QuandoRecuperaCarrinho() {
+        List<CarrinhoRetornoDto> itensRetornados = carrinhoService.recuperaCarrinho(1L);
 
-        assertEquals(1, produtosDto.size());
+        assertEquals(1, itensRetornados.size());
 
-        ProdutoDto produtoDto = produtosDto.get(0);
+        CarrinhoRetornoDto carrinhoRetornoDto = itensRetornados.get(0);
+        ProdutoDto produtoRetornadoDto = carrinhoRetornoDto.getProduto();
 
-        assertEquals(1L, produtoDto.getId());
+        assertEquals(1L, produtoRetornadoDto.getId());
+        assertEquals(1, carrinhoRetornoDto.getQuantidade());
     }
 
     @Test
