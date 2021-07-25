@@ -16,7 +16,7 @@ import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ClienteControllerTest extends ControllerTest {
+class ClienteControllerIntTest extends ControllerIntTest {
     private URI uri;
 
     @BeforeEach

@@ -1,22 +1,19 @@
 package br.com.jmsdevelopment.ecom.service;
 
+import br.com.jmsdevelopment.ecom.BaseIntTest;
 import br.com.jmsdevelopment.ecom.dto.produto.ProdutoDto;
 import br.com.jmsdevelopment.ecom.helpers.exception.ProdutoNaoEncontradoException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-@ActiveProfiles("test")
-class ProdutoServiceImplIntTest {
+class ProdutoServiceImplIntIntTest extends BaseIntTest {
 
     @Autowired
     private ProdutoService produtoService;

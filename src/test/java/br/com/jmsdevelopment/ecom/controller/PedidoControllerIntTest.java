@@ -17,7 +17,7 @@ import java.net.URISyntaxException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class PedidoControllerTest extends ControllerTest {
+class PedidoControllerIntTest extends ControllerIntTest {
 
     @Autowired
     private MockMvc mockMvc;

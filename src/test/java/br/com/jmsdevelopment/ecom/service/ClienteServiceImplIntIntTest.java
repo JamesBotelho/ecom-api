@@ -1,17 +1,14 @@
 package br.com.jmsdevelopment.ecom.service;
 
+import br.com.jmsdevelopment.ecom.BaseIntTest;
 import br.com.jmsdevelopment.ecom.dto.cliente.ClienteDto;
 import br.com.jmsdevelopment.ecom.helpers.exception.ClienteNaoEncontradoException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-@ActiveProfiles("test")
-class ClienteServiceImplIntTest {
+class ClienteServiceImplIntIntTest extends BaseIntTest {
 
     @Autowired
     private ClienteService clienteService;
@@ -25,6 +22,6 @@ class ClienteServiceImplIntTest {
 
     @Test
     public void deve_RetornarClienteNaoEncontradoException_QuandoPesquisaPorIdInexistente() {
-        assertThrows(ClienteNaoEncontradoException.class, () -> clienteService.recuperarClientePorId(3L));
+        assertThrows(ClienteNaoEncontradoException.class, () -> clienteService.recuperarClientePorId(100L));
     }
 }
