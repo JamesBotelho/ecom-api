@@ -10,6 +10,6 @@ spring:
     initialization-mode: never
   data:
     mongodb:
-      host: 'localhost'
-      port: 27017
-      database: 'test'
+      host: ${MONGO_HOST}
+      port: ${MONGO_PORT}
+      database: ${MONGO_DATABASE}

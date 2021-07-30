@@ -8,6 +8,7 @@ import br.com.jmsdevelopment.ecom.helpers.exception.PedidoNaoEncontradoException
 import br.com.jmsdevelopment.ecom.mappers.PedidoMapper;
 import br.com.jmsdevelopment.ecom.model.ItemPedido;
 import br.com.jmsdevelopment.ecom.model.Pedido;
+import br.com.jmsdevelopment.ecom.repository.CarrinhoRepository;
 import br.com.jmsdevelopment.ecom.repository.PedidoItemRepository;
 import br.com.jmsdevelopment.ecom.repository.PedidoRepository;
 import br.com.jmsdevelopment.ecom.service.validacao.Validacao;
@@ -35,6 +36,7 @@ public class PedidoServiceImpl implements PedidoService {
 	@NonNull
 	@Qualifier("valida-numero-itens-paginacao")
 	private final Validacao<Pageable> validaQuantidadeItensPaginacao;
+	private final CarrinhoRepository carrinhoRepository;
 
 	@Override
 	public PedidoDto pedidoPorId(Long id) {
@@ -58,6 +60,8 @@ public class PedidoServiceImpl implements PedidoService {
 			item.setIdPedido(idPedido);
 			pedidoItemRepository.saveAndFlush(item);
 		});
+
+		carrinhoRepository.deleteById(pedidoDto.getCliente().getId());
 
 		return pedidoMapper.toPedidoDto(pedidoSalvo);
 	}
