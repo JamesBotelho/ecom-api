@@ -12,3 +12,8 @@ spring:
     username: sa
     driver-class-name: org.h2.Driver
     initialization-mode: always
+  data:
+    mongodb:
+      host: 'localhost'
+      port: 27017
+      database: 'test'

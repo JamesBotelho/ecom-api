@@ -1,8 +1,12 @@
 package br.com.jmsdevelopment.ecom.controller;
 
 import java.net.URI;
+import java.util.List;
 
+import br.com.jmsdevelopment.ecom.dto.carrinho.CarrinhoRetornoDto;
+import br.com.jmsdevelopment.ecom.dto.carrinho.ItensCarrinhoDto;
 import br.com.jmsdevelopment.ecom.dto.pedido.PedidoDto;
+import br.com.jmsdevelopment.ecom.service.CarrinhoService;
 import br.com.jmsdevelopment.ecom.service.PedidoService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -35,6 +40,7 @@ public class ClienteController {
 	
 	private final ClienteService clienteService;
 	private final PedidoService pedidoService;
+	private final CarrinhoService carrinhoService;
 	
 	@GetMapping("{id}")
 	public ResponseEntity<ClienteDto> recuperaClientePorId(@PathVariable Long id) {
@@ -46,6 +52,24 @@ public class ClienteController {
 	public Page<PedidoDto> pedidosCliente(@PathVariable Long id,
 										  @PageableDefault(sort="dataHora", direction = Sort.Direction.ASC) Pageable pageable) {
 		return pedidoService.pedidosDoCliente(id, pageable);
+	}
+
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping("{id}/carrinho")
+	public List<CarrinhoRetornoDto> itensCarrinhoDto(@PathVariable Long id) {
+		return carrinhoService.recuperaCarrinho(id);
+	}
+
+	@ResponseStatus(HttpStatus.OK)
+	@PutMapping("{id}/carrinho")
+	public void atualizaCarrinho(@PathVariable Long id, @Valid @RequestBody ItensCarrinhoDto itensCarrinhoDto) {
+		carrinhoService.salvaCarrinho(id, itensCarrinhoDto);
+	}
+
+	@ResponseStatus(HttpStatus.OK)
+	@DeleteMapping("{id}/carrinho")
+	public void deletaCarrinho(@PathVariable Long id) {
+		carrinhoService.deletaCarrinho(id);
 	}
 	
 	@PostMapping

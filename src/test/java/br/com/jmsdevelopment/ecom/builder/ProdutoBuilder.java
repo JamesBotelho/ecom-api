@@ -1,7 +1,6 @@
 package br.com.jmsdevelopment.ecom.builder;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Collections;
 
 import br.com.jmsdevelopment.ecom.model.Categoria;

@@ -15,6 +15,7 @@ import br.com.jmsdevelopment.ecom.mappers.PedidoMapper;
 import br.com.jmsdevelopment.ecom.mappers.ProdutoMapper;
 import br.com.jmsdevelopment.ecom.model.Pedido;
 import br.com.jmsdevelopment.ecom.model.Produto;
+import br.com.jmsdevelopment.ecom.repository.CarrinhoRepository;
 import br.com.jmsdevelopment.ecom.repository.PedidoItemRepository;
 import br.com.jmsdevelopment.ecom.repository.PedidoRepository;
 import br.com.jmsdevelopment.ecom.service.validacao.ValidaNumeroItensPaginacao;
@@ -45,8 +46,14 @@ class PedidoServiceImplMockTest {
     @Mock
     private PedidoItemRepository pedidoItemRepository;
 
+    @Mock
+    private CarrinhoRepository carrinhoRepository;
+
     @Captor
     private ArgumentCaptor<Pedido> pedidoArgumentCaptor;
+
+    @Captor
+    private ArgumentCaptor<Long> idCapturado;
 
     private PedidoMapper pedidoMapper;
     private PedidoService pedidoService;
@@ -62,7 +69,7 @@ class PedidoServiceImplMockTest {
         MockitoAnnotations.openMocks(this);
         this.pedidoMapper = Mappers.getMapper(PedidoMapper.class);
         this.validaPaginacao = new ValidaNumeroItensPaginacao();
-        this.pedidoService = new PedidoServiceImpl(produtoService, clienteService, pedidoRepository, pedidoMapper, pedidoItemRepository, validaPaginacao);
+        this.pedidoService = new PedidoServiceImpl(produtoService, clienteService, pedidoRepository, pedidoMapper, pedidoItemRepository, validaPaginacao, carrinhoRepository);
         pedidoRetornoEsperadoDto = new PedidoDtoBuilder()
                 .comId(1L)
                 .comValorTotal(new BigDecimal("100"))
@@ -120,7 +127,7 @@ class PedidoServiceImplMockTest {
     }
 
     @Test
-    public void deve_ChamarPersistenciaNoBancoECalcularValorTotalDoPedidoCorretamente_QuandoClienteEPrecoProdutoSaoValidos() {
+    public void deve_ChamarPersistenciaNoBancoCalcularValorTotalDoPedidoCorretamenteEDeletarCarrinho_QuandoClienteEPrecoProdutoSaoValidos() {
         Mockito.when(clienteService.recuperarClientePorId(1L)).thenReturn(new ClienteDto());
 
         ProdutoMapper produtoMapper = Mappers.getMapper(ProdutoMapper.class);
@@ -132,6 +139,10 @@ class PedidoServiceImplMockTest {
         pedidoService.salvaPedido(pedidoRetornoEsperadoDto);
 
         Mockito.verify(pedidoRepository).saveAndFlush(pedidoArgumentCaptor.capture());
+
+        Mockito.verify(carrinhoRepository).deleteById(idCapturado.capture());
+
+        assertEquals(1L, idCapturado.getValue());
 
         BigDecimal valorTotalCalculado = pedidoArgumentCaptor.getValue().getValorTotal();
 

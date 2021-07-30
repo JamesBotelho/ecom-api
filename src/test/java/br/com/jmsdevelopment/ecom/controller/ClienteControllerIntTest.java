@@ -2,7 +2,12 @@ package br.com.jmsdevelopment.ecom.controller;
 
 import br.com.jmsdevelopment.ecom.builder.ClienteCadastroDtoBuilder;
 import br.com.jmsdevelopment.ecom.builder.ClienteDtoBuilder;
+import br.com.jmsdevelopment.ecom.dto.carrinho.CarrinhoRetornoDto;
+import br.com.jmsdevelopment.ecom.dto.carrinho.ItemCarrinhoDto;
+import br.com.jmsdevelopment.ecom.dto.carrinho.ItensCarrinhoDto;
 import br.com.jmsdevelopment.ecom.dto.cliente.ClienteDto;
+import br.com.jmsdevelopment.ecom.dto.produto.ProdutoDto;
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -13,10 +18,12 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ClienteControllerTest extends ControllerTest {
+class ClienteControllerIntTest extends ControllerIntTest {
     private URI uri;
 
     @BeforeEach
@@ -245,4 +252,106 @@ class ClienteControllerTest extends ControllerTest {
         assertNotEquals("exemplo@email.com", clienteRetornadoDto.getEmail());
         assertNotEquals("94587191000", clienteRetornadoDto.getCpf());
     }
+
+    @Test
+    public void deve_RetornarStatus400_QuandoTentaSalvarCarrinhoSemItens() throws Exception {
+        uri = new URI("/cliente/1/carrinho");
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .put(uri)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is(400));
+    }
+
+    @Test
+    public void deve_RetornarStatus400_QuandoTentaSalvarCarrinhoComItensInvalidos() throws Exception {
+        uri = new URI("/cliente/1/carrinho");
+
+        ItensCarrinhoDto itensCarrinhoDto = new ItensCarrinhoDto(Collections.singletonList(new ItemCarrinhoDto(100L, 1)));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .put(uri)
+                .content(mapToJson(itensCarrinhoDto))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is(400));
+    }
+
+    @Test
+    public void deve_RetornarStatus200_QuandoSalvaCarrinho() throws Exception {
+        uri = new URI("/cliente/2/carrinho");
+
+        ItensCarrinhoDto itensCarrinhoDto = new ItensCarrinhoDto(Collections.singletonList(new ItemCarrinhoDto(1L, 1)));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .put(uri)
+                .content(mapToJson(itensCarrinhoDto))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is(200));
+    }
+
+    @Test
+    public void deve_RetornarStatus404_QuandoTentaRecuperarCarrinhoInexistente() throws Exception {
+        uri = new URI("/cliente/3/carrinho");
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .get(uri)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is(404));
+    }
+
+    @Test
+    public void deve_retornarCarrinhoSalvo_QuandoRealizaRequisicao() throws Exception {
+        uri = new URI("/cliente/1/carrinho");
+
+        ItensCarrinhoDto itensCarrinhoDto = new ItensCarrinhoDto(Collections.singletonList(new ItemCarrinhoDto(1L, 1)));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .put(uri)
+                .content(mapToJson(itensCarrinhoDto))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is(200));
+
+        MvcResult mvcResultCarrinho = mockMvc.perform(MockMvcRequestBuilders
+                .get(uri)
+                .accept(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        assertEquals(200, mvcResultCarrinho.getResponse().getStatus());
+
+        List<CarrinhoRetornoDto> itensRetornados = mapFromJsonList(mvcResultCarrinho.getResponse().getContentAsString(StandardCharsets.UTF_8), new TypeReference<>() {
+        });
+
+        assertEquals(1, itensRetornados.size());
+
+        CarrinhoRetornoDto carrinhoRetornoDto = itensRetornados.get(0);
+
+        assertEquals(1, carrinhoRetornoDto.getQuantidade());
+
+        ProdutoDto produtoRetornadoDto = carrinhoRetornoDto.getProduto();
+
+        assertEquals(1L, produtoRetornadoDto.getId());
+    }
+
+    @Test
+    public void deve_retornarStatus404_quandoRecuperarCarrinhoQueFoiDeletado() throws Exception {
+        uri = new URI("/cliente/1/carrinho");
+
+        ItensCarrinhoDto itensCarrinhoDto = new ItensCarrinhoDto(Collections.singletonList(new ItemCarrinhoDto(1L, 1)));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .put(uri)
+                .content(mapToJson(itensCarrinhoDto))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is(200));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .delete(uri))
+                .andExpect(MockMvcResultMatchers.status().is(200));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .get(uri)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+
 }
