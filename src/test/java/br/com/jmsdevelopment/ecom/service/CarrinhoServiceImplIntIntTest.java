@@ -5,11 +5,14 @@ import br.com.jmsdevelopment.ecom.dto.carrinho.CarrinhoRetornoDto;
 import br.com.jmsdevelopment.ecom.dto.carrinho.ItemCarrinhoDto;
 import br.com.jmsdevelopment.ecom.dto.carrinho.ItensCarrinhoDto;
 import br.com.jmsdevelopment.ecom.dto.produto.ProdutoDto;
+import br.com.jmsdevelopment.ecom.helpers.exception.CarrinhoNaoEncontradoException;
+import br.com.jmsdevelopment.ecom.helpers.exception.ItemCarrinhoInvalidoException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -48,6 +51,13 @@ class CarrinhoServiceImplIntIntTest extends BaseIntTest {
     public void deve_retornarException_QuandoDeletaCarrinhoEPesquisaPorEle() {
         carrinhoService.deletaCarrinho(1L);
 
-        assertThrows(RuntimeException.class, () -> carrinhoService.recuperaCarrinho(1L));
+        assertThrows(CarrinhoNaoEncontradoException.class, () -> carrinhoService.recuperaCarrinho(1L));
+    }
+
+    @Test
+    public void deve_retornarException_QuandoTentaInserirProdutoNoCarrinhoInexistente() {
+        ItensCarrinhoDto itensCarrinhoDto = new ItensCarrinhoDto(Arrays.asList(new ItemCarrinhoDto(1L, 1), new ItemCarrinhoDto(100L, 1)));
+
+        assertThrows(ItemCarrinhoInvalidoException.class, () -> carrinhoService.salvaCarrinho(1L, itensCarrinhoDto));
     }
 }

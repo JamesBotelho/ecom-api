@@ -3,6 +3,7 @@ package br.com.jmsdevelopment.ecom.service;
 import br.com.jmsdevelopment.ecom.dto.carrinho.CarrinhoRetornoDto;
 import br.com.jmsdevelopment.ecom.dto.carrinho.ItensCarrinhoDto;
 import br.com.jmsdevelopment.ecom.helpers.exception.CarrinhoNaoEncontradoException;
+import br.com.jmsdevelopment.ecom.helpers.exception.ItemCarrinhoInvalidoException;
 import br.com.jmsdevelopment.ecom.mappers.CarrinhoMapper;
 import br.com.jmsdevelopment.ecom.mappers.ProdutoMapper;
 import br.com.jmsdevelopment.ecom.model.Carrinho;
@@ -30,6 +31,12 @@ public class CarrinhoServiceImpl implements CarrinhoService {
     @Override
     public void salvaCarrinho(Long id, ItensCarrinhoDto itensCarrinhoDto) {
         List<ItemCarrinho> itensCarrinho = itensCarrinhoDto.getItens().stream().map(carrinhoMapper::toModel).collect(Collectors.toList());
+
+        List<Produto> produtos = produtoRepository.findAllById(itensCarrinho.stream().map(ItemCarrinho::getIdProduto).collect(Collectors.toList()));
+
+        if (produtos.size() != itensCarrinho.size()) {
+            throw new ItemCarrinhoInvalidoException();
+        }
 
         Carrinho carrinho = new Carrinho(id, itensCarrinho);
         carrinhoRepository.save(carrinho);
