@@ -331,4 +331,27 @@ class ClienteControllerIntTest extends ControllerIntTest {
 
         assertEquals(1L, produtoRetornadoDto.getId());
     }
+
+    @Test
+    public void deve_retornarStatus404_quandoRecuperarCarrinhoQueFoiDeletado() throws Exception {
+        uri = new URI("/cliente/1/carrinho");
+
+        ItensCarrinhoDto itensCarrinhoDto = new ItensCarrinhoDto(Collections.singletonList(new ItemCarrinhoDto(1L, 1)));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .put(uri)
+                .content(mapToJson(itensCarrinhoDto))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is(200));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .delete(uri))
+                .andExpect(MockMvcResultMatchers.status().is(200));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .get(uri)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+
 }
