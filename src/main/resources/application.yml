@@ -13,3 +13,8 @@ spring:
       host: ${MONGO_HOST}
       port: ${MONGO_PORT}
       database: ${MONGO_DATABASE}
+ecom:
+  jwt:
+    issuer: ${TOKEN_ISSUER}
+    expiracao: ${TOKEN_EXPIRATION}
+    chavesecreta: ${TOKEN_SECRET}

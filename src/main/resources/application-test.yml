@@ -17,3 +17,8 @@ spring:
       host: 'localhost'
       port: 27017
       database: 'test'
+ecom:
+  jwt:
+    issuer: 'ecom-api'
+    expiracao: 360
+    chavesecreta: 'secret'
