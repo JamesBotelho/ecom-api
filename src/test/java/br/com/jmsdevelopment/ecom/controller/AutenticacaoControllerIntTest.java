@@ -1,7 +1,6 @@
 package br.com.jmsdevelopment.ecom.controller;
 
 import br.com.jmsdevelopment.ecom.dto.autenticacao.LoginDto;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +11,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class AutenticacaoControllerIntTest extends ControllerIntTest {
 

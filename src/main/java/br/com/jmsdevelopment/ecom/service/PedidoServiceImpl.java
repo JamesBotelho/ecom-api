@@ -37,10 +37,17 @@ public class PedidoServiceImpl implements PedidoService {
 	@Qualifier("valida-numero-itens-paginacao")
 	private final Validacao<Pageable> validaQuantidadeItensPaginacao;
 	private final CarrinhoRepository carrinhoRepository;
+	@NonNull
+	@Qualifier("valida-id-cliente")
+	private final Validacao<Long> validaIdCliente;
 
 	@Override
 	public PedidoDto pedidoPorId(Long id) {
-		return pedidoMapper.toPedidoDto(pedidoRepository.findById(id).orElseThrow(PedidoNaoEncontradoException::new));
+		PedidoDto pedidoDto = pedidoMapper.toPedidoDto(pedidoRepository.findById(id).orElseThrow(PedidoNaoEncontradoException::new));
+
+		validaIdCliente.validar(pedidoDto.getCliente().getId());
+
+		return pedidoDto;
 	}
 
 	@Override
@@ -81,6 +88,7 @@ public class PedidoServiceImpl implements PedidoService {
 	}
 
 	private void validaCliente(Long id) {
+		validaIdCliente.validar(id);
 		clienteService.recuperarClientePorId(id);
 	}
 	

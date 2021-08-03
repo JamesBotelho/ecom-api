@@ -27,6 +27,7 @@ class PedidoServiceImplIntIntTest extends BaseIntTest {
     @Test
     public void deve_RetornarDoisPedidosEmOrdemCrescenteDeDataHora_QuandoPesquisaPedidoDoCliente() {
 
+        forcaAutenticacao(2L);
         Page<PedidoDto> pedidosPage = pedidoService.pedidosDoCliente(2L, pageable);
 
         assertEquals(2, pedidosPage.getTotalElements());
@@ -45,6 +46,7 @@ class PedidoServiceImplIntIntTest extends BaseIntTest {
 
     @Test
     public void deve_RetornarPedidoNaoEncontradoException_QuandoPesquiasPedidoDeClienteQueNaoPossuiPedido() {
+        forcaAutenticacao(3L);
         assertThrows(PedidoNaoEncontradoException.class, () -> pedidoService.pedidosDoCliente(3L, pageable));
     }
 }

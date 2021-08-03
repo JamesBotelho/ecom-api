@@ -9,9 +9,7 @@ import br.com.jmsdevelopment.ecom.dto.carrinho.ItemCarrinhoDto;
 import br.com.jmsdevelopment.ecom.dto.carrinho.ItensCarrinhoDto;
 import br.com.jmsdevelopment.ecom.dto.cliente.ClienteDto;
 import br.com.jmsdevelopment.ecom.dto.produto.ProdutoDto;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -19,10 +17,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
@@ -339,6 +334,17 @@ class ClienteControllerIntTest extends ControllerIntTest {
                 .header("Authorization", "Bearer " + tokenUserTres)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is(404));
+    }
+
+    @Test
+    public void deve_RetornarStatus400_QuandoTentaRecuperarCarrinhoDeOutroCliente() throws Exception {
+        uri = new URI("/cliente/3/carrinho");
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .get(uri)
+                .header("Authorization", "Bearer " + tokenUserDois)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is(400));
     }
 
     @Test

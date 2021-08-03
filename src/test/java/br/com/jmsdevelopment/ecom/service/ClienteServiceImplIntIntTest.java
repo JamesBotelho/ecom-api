@@ -15,6 +15,9 @@ class ClienteServiceImplIntIntTest extends BaseIntTest {
 
     @Test
     public void deve_RetornarClienteExistente_QuandoPesquisaPorIdExistente() {
+
+        forcaAutenticacao(1L);
+
         ClienteDto clienteDto = clienteService.recuperarClientePorId(1L);
 
         assertNotNull(clienteDto);
@@ -22,6 +25,7 @@ class ClienteServiceImplIntIntTest extends BaseIntTest {
 
     @Test
     public void deve_RetornarClienteNaoEncontradoException_QuandoPesquisaPorIdInexistente() {
+        forcaAutenticacao(100L);
         assertThrows(ClienteNaoEncontradoException.class, () -> clienteService.recuperarClientePorId(100L));
     }
 }

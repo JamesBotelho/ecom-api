@@ -35,6 +35,9 @@ class ClienteServiceImplMockTest {
 
 	@Mock
 	private Validacao<String> validacao;
+
+	@Mock
+	private Validacao<Long> validacaoLong;
 	
 	@Captor
 	public ArgumentCaptor<Cliente> clienteCaptor;
@@ -64,7 +67,7 @@ class ClienteServiceImplMockTest {
 				.comDataNascimento("1990-01-01")
 				.build();
 		Mockito.when(clienteRepository.findById(1L)).thenReturn(Optional.ofNullable(cliente));
-		clienteService = new ClienteServiceImpl(clienteRepository, clienteMapper, validacao, validacao);
+		clienteService = new ClienteServiceImpl(clienteRepository, clienteMapper, validacao, validacao, validacaoLong);
 	}
 	
 	@Test

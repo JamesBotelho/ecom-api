@@ -27,7 +27,7 @@ public class Cliente implements UserDetails {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@Column(name = "NOME", length = 255, nullable = false)
+	@Column(name = "NOME", nullable = false)
 	private String nome;
 	@Column(name = "CPF", length = 11, nullable = false, unique = true)
 	private String cpf;

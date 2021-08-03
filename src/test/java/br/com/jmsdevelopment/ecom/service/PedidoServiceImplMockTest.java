@@ -59,6 +59,9 @@ class PedidoServiceImplMockTest {
     private PedidoService pedidoService;
     private Validacao<Pageable> validaPaginacao;
 
+    @Mock
+    private Validacao<Long> longValidacao;
+
     private Pedido pedidoBanco;
     private PedidoDto pedidoRetornoEsperadoDto;
     private Produto produtoBancoUm;
@@ -69,7 +72,7 @@ class PedidoServiceImplMockTest {
         MockitoAnnotations.openMocks(this);
         this.pedidoMapper = Mappers.getMapper(PedidoMapper.class);
         this.validaPaginacao = new ValidaNumeroItensPaginacao();
-        this.pedidoService = new PedidoServiceImpl(produtoService, clienteService, pedidoRepository, pedidoMapper, pedidoItemRepository, validaPaginacao, carrinhoRepository);
+        this.pedidoService = new PedidoServiceImpl(produtoService, clienteService, pedidoRepository, pedidoMapper, pedidoItemRepository, validaPaginacao, carrinhoRepository, longValidacao);
         pedidoRetornoEsperadoDto = new PedidoDtoBuilder()
                 .comId(1L)
                 .comValorTotal(new BigDecimal("100"))

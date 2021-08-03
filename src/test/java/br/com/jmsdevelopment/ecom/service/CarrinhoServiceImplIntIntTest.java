@@ -25,6 +25,7 @@ class CarrinhoServiceImplIntIntTest extends BaseIntTest {
 
     @BeforeEach
     public void beforeEach() {
+        forcaAutenticacao(1L);
         ItensCarrinhoDto itensCarrinhoDto = new ItensCarrinhoDto(Collections.singletonList(new ItemCarrinhoDto(1L, 1)));
         carrinhoService.salvaCarrinho(1L, itensCarrinhoDto);
     }
