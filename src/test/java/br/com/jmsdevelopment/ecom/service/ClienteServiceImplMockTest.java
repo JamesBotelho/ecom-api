@@ -71,8 +71,10 @@ class ClienteServiceImplMockTest {
 	}
 	
 	@Test
-	public void deve_RetornarUmUsuario_QuandoPesquisaPorId() {
+	public void deve_RetornarUmUsuarioEChamarValidacaoDeIdDeCliente_QuandoPesquisaPorId() {
 		ClienteDto clienteRetornado = clienteService.recuperarClientePorId(1L);
+
+		Mockito.verify(validacaoLong).validar(1L);
 		
 		assertEquals(clienteDto, clienteRetornado);
 	}

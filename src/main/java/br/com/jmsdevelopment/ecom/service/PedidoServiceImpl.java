@@ -41,6 +41,7 @@ public class PedidoServiceImpl implements PedidoService {
 	@Qualifier("valida-id-cliente")
 	private final Validacao<Long> validaIdCliente;
 
+	@Transactional
 	@Override
 	public PedidoDto pedidoPorId(Long id) {
 		PedidoDto pedidoDto = pedidoMapper.toPedidoDto(pedidoRepository.findById(id).orElseThrow(PedidoNaoEncontradoException::new));

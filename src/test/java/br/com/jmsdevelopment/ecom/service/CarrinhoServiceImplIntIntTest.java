@@ -6,6 +6,7 @@ import br.com.jmsdevelopment.ecom.dto.carrinho.ItemCarrinhoDto;
 import br.com.jmsdevelopment.ecom.dto.carrinho.ItensCarrinhoDto;
 import br.com.jmsdevelopment.ecom.dto.produto.ProdutoDto;
 import br.com.jmsdevelopment.ecom.helpers.exception.CarrinhoNaoEncontradoException;
+import br.com.jmsdevelopment.ecom.helpers.exception.IdClienteInvalidoException;
 import br.com.jmsdevelopment.ecom.helpers.exception.ItemCarrinhoInvalidoException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +33,7 @@ class CarrinhoServiceImplIntIntTest extends BaseIntTest {
 
     @AfterEach
     public void afterEach() {
+        forcaAutenticacao(1L);
         carrinhoService.deletaCarrinho(1L);
     }
 
@@ -60,5 +62,27 @@ class CarrinhoServiceImplIntIntTest extends BaseIntTest {
         ItensCarrinhoDto itensCarrinhoDto = new ItensCarrinhoDto(Arrays.asList(new ItemCarrinhoDto(1L, 1), new ItemCarrinhoDto(100L, 1)));
 
         assertThrows(ItemCarrinhoInvalidoException.class, () -> carrinhoService.salvaCarrinho(1L, itensCarrinhoDto));
+    }
+
+    @Test
+    public void deve_retornarException_QuandoTentaRecuperarCarrinhoDeOutroUsuario() {
+        forcaAutenticacao(2L);
+
+        assertThrows(IdClienteInvalidoException.class, () -> carrinhoService.recuperaCarrinho(1L));
+    }
+
+    @Test
+    public void deve_retornarException_QuandoTentaInserirCarrinhoEmOutroUsuario() {
+        forcaAutenticacao(2L);
+
+        ItensCarrinhoDto itensCarrinhoDto = new ItensCarrinhoDto(Collections.singletonList(new ItemCarrinhoDto(1L, 1)));
+        assertThrows(IdClienteInvalidoException.class, () -> carrinhoService.salvaCarrinho(1L, itensCarrinhoDto));
+    }
+
+    @Test
+    public void deve_retornarException_QuandoTentaDeletarCarrinhoDeOutroUsuario() {
+        forcaAutenticacao(2L);
+
+        assertThrows(IdClienteInvalidoException.class, () -> carrinhoService.deletaCarrinho(1L));
     }
 }

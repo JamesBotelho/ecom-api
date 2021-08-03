@@ -130,7 +130,7 @@ class PedidoServiceImplMockTest {
     }
 
     @Test
-    public void deve_ChamarPersistenciaNoBancoCalcularValorTotalDoPedidoCorretamenteEDeletarCarrinho_QuandoClienteEPrecoProdutoSaoValidos() {
+    public void deve_ChamarPersistenciaNoBancoCalcularValorTotalDoPedidoCorretamenteDeletarCarrinhoEChamarValidacaoDeCliente_QuandoClienteEPrecoProdutoSaoValidos() {
         Mockito.when(clienteService.recuperarClientePorId(1L)).thenReturn(new ClienteDto());
 
         ProdutoMapper produtoMapper = Mappers.getMapper(ProdutoMapper.class);
@@ -144,6 +144,8 @@ class PedidoServiceImplMockTest {
         Mockito.verify(pedidoRepository).saveAndFlush(pedidoArgumentCaptor.capture());
 
         Mockito.verify(carrinhoRepository).deleteById(idCapturado.capture());
+
+        Mockito.verify(longValidacao).validar(1L);
 
         assertEquals(1L, idCapturado.getValue());
 
@@ -168,6 +170,8 @@ class PedidoServiceImplMockTest {
         pedidoRetornoEsperadoDto.getItens().set(0, itemPedidoDto);
 
         assertThrows(PedidoInvalidoException.class, () -> pedidoService.salvaPedido(pedidoRetornoEsperadoDto));
+
+        Mockito.verify(longValidacao).validar(1L);
 
         Mockito.verifyNoInteractions(pedidoRepository);
     }

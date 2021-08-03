@@ -3,6 +3,7 @@ package br.com.jmsdevelopment.ecom.service;
 import br.com.jmsdevelopment.ecom.BaseIntTest;
 import br.com.jmsdevelopment.ecom.dto.cliente.ClienteDto;
 import br.com.jmsdevelopment.ecom.helpers.exception.ClienteNaoEncontradoException;
+import br.com.jmsdevelopment.ecom.helpers.exception.IdClienteInvalidoException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,6 +22,13 @@ class ClienteServiceImplIntIntTest extends BaseIntTest {
         ClienteDto clienteDto = clienteService.recuperarClientePorId(1L);
 
         assertNotNull(clienteDto);
+    }
+
+    @Test
+    public void deve_retornarException_QuandoPesquisaClienteComIdDeOutroCliente() {
+        forcaAutenticacao(2L);
+
+        assertThrows(IdClienteInvalidoException.class, () -> clienteService.recuperarClientePorId(1L));
     }
 
     @Test
