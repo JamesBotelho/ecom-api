@@ -48,7 +48,10 @@ public class ClienteBuilder {
 	}
 	
 	public Cliente build() {
-		LocalDate local = LocalDate.parse(this.dataNascimento);
+		LocalDate local = null;
+		if (this.dataNascimento != null) {
+			local = LocalDate.parse(this.dataNascimento);
+		}
 		return new Cliente(id, nome, cpf, email, local, senha, Collections.emptyList());
 	}
 }

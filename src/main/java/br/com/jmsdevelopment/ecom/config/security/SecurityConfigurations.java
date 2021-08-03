@@ -1,6 +1,5 @@
 package br.com.jmsdevelopment.ecom.config.security;
 
-import br.com.jmsdevelopment.ecom.service.UserDetailsServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
