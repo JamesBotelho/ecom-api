@@ -76,8 +76,11 @@ class ClienteServiceImplMockTest {
 	
 	@Test
 	public void deve_CadastrarClienteComIdNulo_QuandoChamaRepository() {
-		
-		clienteService.cadastrarUsuario(new ClienteCadastroDto());
+
+		ClienteCadastroDto clienteCadastroDto = new ClienteCadastroDto();
+		clienteCadastroDto.setSenha("senhaqualquer");
+
+		clienteService.cadastrarUsuario(clienteCadastroDto);
 		
 		Mockito.verify(clienteRepository).save(clienteCaptor.capture());
 		

@@ -20,5 +20,5 @@ spring:
 ecom:
   jwt:
     issuer: 'ecom-api'
-    expiracao: 360
+    expiracao: 3600000
     chavesecreta: 'secret'

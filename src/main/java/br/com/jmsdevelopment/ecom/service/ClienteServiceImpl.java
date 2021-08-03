@@ -11,6 +11,7 @@ import br.com.jmsdevelopment.ecom.service.validacao.Validacao;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
@@ -41,6 +42,8 @@ public class ClienteServiceImpl implements ClienteService {
 
 		validacaoCpf.validar(cliente.getCpf());
 		validacaoEmail.validar(cliente.getEmail());
+
+		cliente.setSenha(new BCryptPasswordEncoder().encode(cliente.getSenha()));
 
 		Cliente clienteSalvo = clienteRepository.save(cliente);
 		
