@@ -1,5 +1,6 @@
 package br.com.jmsdevelopment.ecom.dto.carrinho;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,5 +15,6 @@ import java.util.List;
 public class ItensCarrinhoDto {
     @Valid
     @NotEmpty
+    @ApiModelProperty(value = "Itens do carrinho a ser salvo", required = true)
     private List<ItemCarrinhoDto> itens;
 }
