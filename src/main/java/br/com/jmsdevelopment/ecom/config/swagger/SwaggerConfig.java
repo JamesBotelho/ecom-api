@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.*;
@@ -20,7 +21,6 @@ public class SwaggerConfig {
 
     @Bean
     public Docket api() {
-
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("br.com.jmsdevelopment.ecom.controller"))
@@ -28,7 +28,8 @@ public class SwaggerConfig {
                 .build()
                 .useDefaultResponseMessages(false)
                 .securityContexts(List.of(securityContext()))
-                .securitySchemes(List.of(apiKey()));
+                .securitySchemes(List.of(apiKey()))
+                .apiInfo(apiInfo());
     }
 
     private SecurityContext securityContext() {
@@ -51,5 +52,14 @@ public class SwaggerConfig {
 
     private ApiKey apiKey() {
         return new ApiKey("Token", HttpHeaders.AUTHORIZATION, In.HEADER.name());
+    }
+
+    private ApiInfo apiInfo() {
+        return new ApiInfoBuilder()
+                .title("E-commerce REST API")
+                .description("Api rest que simula as principais funcionalidades de um e-commerce")
+                .version("1.0.0")
+                .contact(new Contact("James Botelho", "https://www.jmsdevelopment.com.br/", "jms.devel@gmail.com"))
+                .build();
     }
 }
