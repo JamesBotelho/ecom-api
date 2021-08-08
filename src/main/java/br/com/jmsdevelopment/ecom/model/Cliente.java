@@ -1,6 +1,7 @@
 package br.com.jmsdevelopment.ecom.model;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -14,17 +15,19 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Entity
 @Table(name = "CLIENTE")
-public class Cliente {
+public class Cliente implements UserDetails {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@Column(name = "NOME", length = 255, nullable = false)
+	@Column(name = "NOME", nullable = false)
 	private String nome;
 	@Column(name = "CPF", length = 11, nullable = false, unique = true)
 	private String cpf;
@@ -36,4 +39,39 @@ public class Cliente {
 	private String senha;
 	@OneToMany(mappedBy = "cliente")
 	private List<Pedido> pedidos;
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return null;
+	}
+
+	@Override
+	public String getPassword() {
+		return senha;
+	}
+
+	@Override
+	public String getUsername() {
+		return email;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
 }

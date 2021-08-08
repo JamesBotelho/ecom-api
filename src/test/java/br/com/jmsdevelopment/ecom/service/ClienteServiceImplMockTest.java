@@ -35,6 +35,9 @@ class ClienteServiceImplMockTest {
 
 	@Mock
 	private Validacao<String> validacao;
+
+	@Mock
+	private Validacao<Long> validacaoLong;
 	
 	@Captor
 	public ArgumentCaptor<Cliente> clienteCaptor;
@@ -64,20 +67,25 @@ class ClienteServiceImplMockTest {
 				.comDataNascimento("1990-01-01")
 				.build();
 		Mockito.when(clienteRepository.findById(1L)).thenReturn(Optional.ofNullable(cliente));
-		clienteService = new ClienteServiceImpl(clienteRepository, clienteMapper, validacao, validacao);
+		clienteService = new ClienteServiceImpl(clienteRepository, clienteMapper, validacao, validacao, validacaoLong);
 	}
 	
 	@Test
-	public void deve_RetornarUmUsuario_QuandoPesquisaPorId() {
+	public void deve_RetornarUmUsuarioEChamarValidacaoDeIdDeCliente_QuandoPesquisaPorId() {
 		ClienteDto clienteRetornado = clienteService.recuperarClientePorId(1L);
+
+		Mockito.verify(validacaoLong).validar(1L);
 		
 		assertEquals(clienteDto, clienteRetornado);
 	}
 	
 	@Test
 	public void deve_CadastrarClienteComIdNulo_QuandoChamaRepository() {
-		
-		clienteService.cadastrarUsuario(new ClienteCadastroDto());
+
+		ClienteCadastroDto clienteCadastroDto = new ClienteCadastroDto();
+		clienteCadastroDto.setSenha("senhaqualquer");
+
+		clienteService.cadastrarUsuario(clienteCadastroDto);
 		
 		Mockito.verify(clienteRepository).save(clienteCaptor.capture());
 		

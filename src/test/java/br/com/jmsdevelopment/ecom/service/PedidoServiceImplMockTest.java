@@ -59,6 +59,9 @@ class PedidoServiceImplMockTest {
     private PedidoService pedidoService;
     private Validacao<Pageable> validaPaginacao;
 
+    @Mock
+    private Validacao<Long> longValidacao;
+
     private Pedido pedidoBanco;
     private PedidoDto pedidoRetornoEsperadoDto;
     private Produto produtoBancoUm;
@@ -69,7 +72,7 @@ class PedidoServiceImplMockTest {
         MockitoAnnotations.openMocks(this);
         this.pedidoMapper = Mappers.getMapper(PedidoMapper.class);
         this.validaPaginacao = new ValidaNumeroItensPaginacao();
-        this.pedidoService = new PedidoServiceImpl(produtoService, clienteService, pedidoRepository, pedidoMapper, pedidoItemRepository, validaPaginacao, carrinhoRepository);
+        this.pedidoService = new PedidoServiceImpl(produtoService, clienteService, pedidoRepository, pedidoMapper, pedidoItemRepository, validaPaginacao, carrinhoRepository, longValidacao);
         pedidoRetornoEsperadoDto = new PedidoDtoBuilder()
                 .comId(1L)
                 .comValorTotal(new BigDecimal("100"))
@@ -127,7 +130,7 @@ class PedidoServiceImplMockTest {
     }
 
     @Test
-    public void deve_ChamarPersistenciaNoBancoCalcularValorTotalDoPedidoCorretamenteEDeletarCarrinho_QuandoClienteEPrecoProdutoSaoValidos() {
+    public void deve_ChamarPersistenciaNoBancoCalcularValorTotalDoPedidoCorretamenteDeletarCarrinhoEChamarValidacaoDeCliente_QuandoClienteEPrecoProdutoSaoValidos() {
         Mockito.when(clienteService.recuperarClientePorId(1L)).thenReturn(new ClienteDto());
 
         ProdutoMapper produtoMapper = Mappers.getMapper(ProdutoMapper.class);
@@ -141,6 +144,8 @@ class PedidoServiceImplMockTest {
         Mockito.verify(pedidoRepository).saveAndFlush(pedidoArgumentCaptor.capture());
 
         Mockito.verify(carrinhoRepository).deleteById(idCapturado.capture());
+
+        Mockito.verify(longValidacao).validar(1L);
 
         assertEquals(1L, idCapturado.getValue());
 
@@ -165,6 +170,8 @@ class PedidoServiceImplMockTest {
         pedidoRetornoEsperadoDto.getItens().set(0, itemPedidoDto);
 
         assertThrows(PedidoInvalidoException.class, () -> pedidoService.salvaPedido(pedidoRetornoEsperadoDto));
+
+        Mockito.verify(longValidacao).validar(1L);
 
         Mockito.verifyNoInteractions(pedidoRepository);
     }

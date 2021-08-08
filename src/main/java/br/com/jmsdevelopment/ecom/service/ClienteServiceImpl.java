@@ -11,6 +11,7 @@ import br.com.jmsdevelopment.ecom.service.validacao.Validacao;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
@@ -25,6 +26,9 @@ public class ClienteServiceImpl implements ClienteService {
 	@NonNull
 	@Qualifier("valida-cpf")
 	private final Validacao<String> validacaoCpf;
+	@NonNull
+	@Qualifier("valida-id-cliente")
+	private final Validacao<Long> validaIdCliente;
 	
 	private Cliente pesquisaPorId(Long id) {
 		return clienteRepository.findById(id).orElseThrow(ClienteNaoEncontradoException::new);
@@ -32,6 +36,7 @@ public class ClienteServiceImpl implements ClienteService {
 	
 	@Override
 	public ClienteDto recuperarClientePorId(Long id) {
+		validaIdCliente.validar(id);
 		return clienteMapper.toClienteDto(pesquisaPorId(id));
 	}
 	
@@ -42,6 +47,8 @@ public class ClienteServiceImpl implements ClienteService {
 		validacaoCpf.validar(cliente.getCpf());
 		validacaoEmail.validar(cliente.getEmail());
 
+		cliente.setSenha(new BCryptPasswordEncoder().encode(cliente.getSenha()));
+
 		Cliente clienteSalvo = clienteRepository.save(cliente);
 		
 		return clienteMapper.toClienteDto(clienteSalvo);
@@ -49,6 +56,7 @@ public class ClienteServiceImpl implements ClienteService {
 	
 	@Override
 	public void atualizarCliente(Long id, ClienteDto clienteDto) {
+		validaIdCliente.validar(id);
 		Cliente cliente = pesquisaPorId(id);
 		cliente = clienteMapper.toModel(clienteDto, cliente);
 		cliente.setId(id);
@@ -57,6 +65,7 @@ public class ClienteServiceImpl implements ClienteService {
 	
 	@Override
 	public void alterarSenha(Long id, ClienteAlteraSenhaDto clienteAlteraSenhaDto) {
+		validaIdCliente.validar(id);
 		Cliente cliente = pesquisaPorId(id);
 		if (!cliente.getSenha().equals(clienteAlteraSenhaDto.getSenhaAntiga())) {
 			throw new RuntimeException("A senha atual é inválida!");

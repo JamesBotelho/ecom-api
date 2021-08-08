@@ -1,6 +1,8 @@
 package br.com.jmsdevelopment.ecom.controller;
 
 import br.com.jmsdevelopment.ecom.builder.PedidoDtoBuilder;
+import br.com.jmsdevelopment.ecom.dto.autenticacao.LoginDto;
+import br.com.jmsdevelopment.ecom.dto.autenticacao.TokenDto;
 import br.com.jmsdevelopment.ecom.dto.pedido.PedidoDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +15,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.math.BigDecimal;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,11 +23,39 @@ class PedidoControllerIntTest extends ControllerIntTest {
     @Autowired
     private MockMvc mockMvc;
 
+    private URI uriAuth;
     private URI uri;
+    private boolean realizouLogin;
+
+    private String tokenUserUm;
+    private String tokenUserDois;
+    private String tokenUserTres;
 
     @BeforeEach
-    public void beforeEach() throws URISyntaxException {
+    public void beforeEach() throws Exception {
+        uriAuth = new URI("/login");
         uri = new URI("/pedido");
+        if (!realizouLogin) {
+            LoginDto loginDtoUserUm = new LoginDto("teste@email.com", "1234567890");
+            LoginDto loginDtoUserDois = new LoginDto("teste2@email.com", "1234567890");
+            LoginDto loginDtoUserTres = new LoginDto("teste3@email.com", "1234567890");
+            tokenUserUm = getTokenUsuario(loginDtoUserUm);
+            tokenUserDois = getTokenUsuario(loginDtoUserDois);
+            tokenUserTres = getTokenUsuario(loginDtoUserTres);
+            realizouLogin = true;
+        }
+    }
+
+    private String getTokenUsuario(LoginDto loginDto) throws Exception {
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+                .post(uriAuth)
+                .content(mapToJson(loginDto))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        TokenDto tokenDto = mapFromJson(mvcResult.getResponse().getContentAsString(), TokenDto.class);
+
+        return tokenDto.getToken();
     }
 
     @Test
@@ -37,6 +66,7 @@ class PedidoControllerIntTest extends ControllerIntTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                 .post(uri)
+                .header("Authorization", "Bearer " + tokenUserUm)
                 .content(mapToJson(pedidoDto))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is(400));
@@ -50,6 +80,7 @@ class PedidoControllerIntTest extends ControllerIntTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                 .post(uri)
+                .header("Authorization", "Bearer " + tokenUserUm)
                 .content(mapToJson(pedidoDto))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is(400));
@@ -64,6 +95,7 @@ class PedidoControllerIntTest extends ControllerIntTest {
 
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
                 .post(uri)
+                .header("Authorization", "Bearer " + tokenUserUm)
                 .content(mapToJson(pedidoDto))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
@@ -85,6 +117,7 @@ class PedidoControllerIntTest extends ControllerIntTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                 .post(uri)
+                .header("Authorization", "Bearer " + tokenUserUm)
                 .content(mapToJson(pedidoDto))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is(400));
@@ -99,6 +132,7 @@ class PedidoControllerIntTest extends ControllerIntTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                 .post(uri)
+                .header("Authorization", "Bearer " + tokenUserUm)
                 .content(mapToJson(pedidoDto))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is(400));

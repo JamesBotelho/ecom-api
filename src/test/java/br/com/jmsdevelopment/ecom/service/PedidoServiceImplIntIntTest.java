@@ -1,7 +1,9 @@
 package br.com.jmsdevelopment.ecom.service;
 
 import br.com.jmsdevelopment.ecom.BaseIntTest;
+import br.com.jmsdevelopment.ecom.builder.PedidoDtoBuilder;
 import br.com.jmsdevelopment.ecom.dto.pedido.PedidoDto;
+import br.com.jmsdevelopment.ecom.helpers.exception.IdClienteInvalidoException;
 import br.com.jmsdevelopment.ecom.helpers.exception.PedidoNaoEncontradoException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -27,6 +30,7 @@ class PedidoServiceImplIntIntTest extends BaseIntTest {
     @Test
     public void deve_RetornarDoisPedidosEmOrdemCrescenteDeDataHora_QuandoPesquisaPedidoDoCliente() {
 
+        forcaAutenticacao(2L);
         Page<PedidoDto> pedidosPage = pedidoService.pedidosDoCliente(2L, pageable);
 
         assertEquals(2, pedidosPage.getTotalElements());
@@ -45,6 +49,26 @@ class PedidoServiceImplIntIntTest extends BaseIntTest {
 
     @Test
     public void deve_RetornarPedidoNaoEncontradoException_QuandoPesquiasPedidoDeClienteQueNaoPossuiPedido() {
+        forcaAutenticacao(3L);
         assertThrows(PedidoNaoEncontradoException.class, () -> pedidoService.pedidosDoCliente(3L, pageable));
+    }
+
+    @Test
+    public void deve_retornarException_QuandoPesquisaPedidoDeOutroCliente() {
+        forcaAutenticacao(3L);
+        assertThrows(IdClienteInvalidoException.class, () -> pedidoService.pedidoPorId(1L));
+    }
+
+    @Test
+    public void deve_retornarException_QuandoInserePedidoEmOutroCliente() {
+        PedidoDto pedidoDto = new PedidoDtoBuilder()
+                .comCliente(1L, null, null)
+                .comItemPedido(1L, null, 1, new BigDecimal(40))
+                .comValorTotal(new BigDecimal(40))
+                .build();
+
+        forcaAutenticacao(3L);
+
+        assertThrows(IdClienteInvalidoException.class, () -> pedidoService.salvaPedido(pedidoDto));
     }
 }

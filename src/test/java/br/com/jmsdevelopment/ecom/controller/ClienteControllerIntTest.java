@@ -2,6 +2,8 @@ package br.com.jmsdevelopment.ecom.controller;
 
 import br.com.jmsdevelopment.ecom.builder.ClienteCadastroDtoBuilder;
 import br.com.jmsdevelopment.ecom.builder.ClienteDtoBuilder;
+import br.com.jmsdevelopment.ecom.dto.autenticacao.LoginDto;
+import br.com.jmsdevelopment.ecom.dto.autenticacao.TokenDto;
 import br.com.jmsdevelopment.ecom.dto.carrinho.CarrinhoRetornoDto;
 import br.com.jmsdevelopment.ecom.dto.carrinho.ItemCarrinhoDto;
 import br.com.jmsdevelopment.ecom.dto.carrinho.ItensCarrinhoDto;
@@ -16,7 +18,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
@@ -24,11 +25,41 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ClienteControllerIntTest extends ControllerIntTest {
+    private URI uriAuth;
     private URI uri;
 
+    private String tokenUserUm;
+    private String tokenUserDois;
+    private String tokenUserTres;
+
+    private boolean realizouLogin = false;
+
     @BeforeEach
-    public void beforeEach() throws URISyntaxException {
+    public void beforeEach() throws Exception {
+        uriAuth = new URI("/login");
         uri = new URI("/cliente");
+
+        if (!realizouLogin) {
+            LoginDto loginDtoUserUm = new LoginDto("teste@email.com", "1234567890");
+            LoginDto loginDtoUserDois = new LoginDto("teste2@email.com", "1234567890");
+            LoginDto loginDtoUserTres = new LoginDto("teste3@email.com", "1234567890");
+            tokenUserUm = getTokenUsuario(loginDtoUserUm);
+            tokenUserDois = getTokenUsuario(loginDtoUserDois);
+            tokenUserTres = getTokenUsuario(loginDtoUserTres);
+            realizouLogin = true;
+        }
+    }
+
+    private String getTokenUsuario(LoginDto loginDto) throws Exception {
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+                .post(uriAuth)
+                .content(mapToJson(loginDto))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        TokenDto tokenDto = mapFromJson(mvcResult.getResponse().getContentAsString(), TokenDto.class);
+
+        return tokenDto.getToken();
     }
 
     @Test
@@ -232,6 +263,7 @@ class ClienteControllerIntTest extends ControllerIntTest {
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
                 .put(uri)
                 .content(mapToJson(clienteDto))
+                .header("Authorization", "Bearer " + tokenUserUm)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
 
@@ -239,6 +271,7 @@ class ClienteControllerIntTest extends ControllerIntTest {
 
         MvcResult mvcResultPesquisaCliente = mockMvc.perform(MockMvcRequestBuilders
                 .get(uri)
+                .header("Authorization", "Bearer " + tokenUserUm)
                 .accept(MediaType.APPLICATION_JSON))
                 .andReturn();
 
@@ -259,6 +292,7 @@ class ClienteControllerIntTest extends ControllerIntTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                 .put(uri)
+                .header("Authorization", "Bearer " + tokenUserUm)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is(400));
     }
@@ -271,6 +305,7 @@ class ClienteControllerIntTest extends ControllerIntTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                 .put(uri)
+                .header("Authorization", "Bearer " + tokenUserUm)
                 .content(mapToJson(itensCarrinhoDto))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is(400));
@@ -284,6 +319,7 @@ class ClienteControllerIntTest extends ControllerIntTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                 .put(uri)
+                .header("Authorization", "Bearer " + tokenUserDois)
                 .content(mapToJson(itensCarrinhoDto))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is(200));
@@ -295,8 +331,20 @@ class ClienteControllerIntTest extends ControllerIntTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                 .get(uri)
+                .header("Authorization", "Bearer " + tokenUserTres)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is(404));
+    }
+
+    @Test
+    public void deve_RetornarStatus400_QuandoTentaRecuperarCarrinhoDeOutroCliente() throws Exception {
+        uri = new URI("/cliente/3/carrinho");
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .get(uri)
+                .header("Authorization", "Bearer " + tokenUserDois)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is(400));
     }
 
     @Test
@@ -307,12 +355,14 @@ class ClienteControllerIntTest extends ControllerIntTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                 .put(uri)
+                .header("Authorization", "Bearer " + tokenUserUm)
                 .content(mapToJson(itensCarrinhoDto))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is(200));
 
         MvcResult mvcResultCarrinho = mockMvc.perform(MockMvcRequestBuilders
                 .get(uri)
+                .header("Authorization", "Bearer " + tokenUserUm)
                 .accept(MediaType.APPLICATION_JSON))
                 .andReturn();
 
@@ -340,16 +390,19 @@ class ClienteControllerIntTest extends ControllerIntTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                 .put(uri)
+                .header("Authorization", "Bearer " + tokenUserUm)
                 .content(mapToJson(itensCarrinhoDto))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is(200));
 
         mockMvc.perform(MockMvcRequestBuilders
-                .delete(uri))
+                .delete(uri)
+                .header("Authorization", "Bearer " + tokenUserUm))
                 .andExpect(MockMvcResultMatchers.status().is(200));
 
         mockMvc.perform(MockMvcRequestBuilders
                 .get(uri)
+                .header("Authorization", "Bearer " + tokenUserUm)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
