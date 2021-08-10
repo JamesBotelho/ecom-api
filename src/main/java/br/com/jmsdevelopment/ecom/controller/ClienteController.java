@@ -1,41 +1,31 @@
 package br.com.jmsdevelopment.ecom.controller;
 
-import java.net.URI;
-import java.util.List;
-
-import br.com.jmsdevelopment.ecom.dto.MensagemDto;
 import br.com.jmsdevelopment.ecom.dto.carrinho.CarrinhoRetornoDto;
 import br.com.jmsdevelopment.ecom.dto.carrinho.ItensCarrinhoDto;
+import br.com.jmsdevelopment.ecom.dto.cliente.ClienteAlteraSenhaDto;
+import br.com.jmsdevelopment.ecom.dto.cliente.ClienteCadastroDto;
+import br.com.jmsdevelopment.ecom.dto.cliente.ClienteDto;
+import br.com.jmsdevelopment.ecom.dto.erros.ErroDto;
 import br.com.jmsdevelopment.ecom.dto.pedido.PedidoDto;
 import br.com.jmsdevelopment.ecom.service.CarrinhoService;
+import br.com.jmsdevelopment.ecom.service.ClienteService;
 import br.com.jmsdevelopment.ecom.service.PedidoService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import br.com.jmsdevelopment.ecom.dto.cliente.ClienteAlteraSenhaDto;
-import br.com.jmsdevelopment.ecom.dto.cliente.ClienteCadastroDto;
-import br.com.jmsdevelopment.ecom.dto.cliente.ClienteDto;
-import br.com.jmsdevelopment.ecom.service.ClienteService;
-import lombok.AllArgsConstructor;
-
 import javax.validation.Valid;
+import java.net.URI;
+import java.util.List;
 
 @AllArgsConstructor
 @RestController
@@ -49,9 +39,9 @@ public class ClienteController {
 	@ApiOperation(value = "Retorna um cliente através do seu id")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Cliente encontrado"),
-			@ApiResponse(code = 400, message = "Requisição inválida", response = MensagemDto.class),
+			@ApiResponse(code = 400, message = "Requisição inválida", response = ErroDto.class),
 			@ApiResponse(code = 403, message = "Não autenticado"),
-			@ApiResponse(code = 404, message = "Cliente não encontrado", response = MensagemDto.class)
+			@ApiResponse(code = 404, message = "Cliente não encontrado", response = ErroDto.class)
 	})
 	@GetMapping(path = "{id}", produces = "application/json")
 	public ResponseEntity<ClienteDto> recuperaClientePorId(@PathVariable Long id) {
@@ -61,9 +51,9 @@ public class ClienteController {
 	@ApiOperation(value = "Retorna os pedidos de um cliente")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Pedido encontrado"),
-			@ApiResponse(code = 400, message = "Requisição inválida", response = MensagemDto.class),
+			@ApiResponse(code = 400, message = "Requisição inválida", response = ErroDto.class),
 			@ApiResponse(code = 403, message = "Não autenticado"),
-			@ApiResponse(code = 404, message = "Cliente ou pedido(s) não encontrado(s)", response = MensagemDto.class)
+			@ApiResponse(code = 404, message = "Cliente ou pedido(s) não encontrado(s)", response = ErroDto.class)
 	})
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping(path = "{id}/pedidos", produces = "application/json")
@@ -75,9 +65,9 @@ public class ClienteController {
 	@ApiOperation(value = "Retorna os produtos que estão no carrinho de um cliente")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Carrinho encontrado"),
-			@ApiResponse(code = 400, message = "Requisição inválida", response = MensagemDto.class),
+			@ApiResponse(code = 400, message = "Requisição inválida", response = ErroDto.class),
 			@ApiResponse(code = 403, message = "Não autenticado"),
-			@ApiResponse(code = 404, message = "Carrinho não encontrado", response = MensagemDto.class)
+			@ApiResponse(code = 404, message = "Carrinho não encontrado", response = ErroDto.class)
 	})
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping(path = "{id}/carrinho", produces = "application/json")
@@ -88,7 +78,7 @@ public class ClienteController {
 	@ApiOperation(value = "Insere produtos no carrinho de um cliente")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Carrinho salvo"),
-			@ApiResponse(code = 400, message = "Requisição inválida", response = MensagemDto.class),
+			@ApiResponse(code = 400, message = "Requisição inválida", response = ErroDto.class),
 			@ApiResponse(code = 403, message = "Não autenticado")
 	})
 	@ResponseStatus(HttpStatus.OK)
@@ -100,7 +90,7 @@ public class ClienteController {
 	@ApiOperation(value = "Deleta o carrinho de um cliente")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Carrinho deletado"),
-			@ApiResponse(code = 400, message = "Requisição inválida", response = MensagemDto.class),
+			@ApiResponse(code = 400, message = "Requisição inválida", response = ErroDto.class),
 			@ApiResponse(code = 403, message = "Não autenticado")
 	})
 	@ResponseStatus(HttpStatus.OK)
@@ -112,8 +102,8 @@ public class ClienteController {
 	@ApiOperation(value = "Realiza o cadastro de um cliente")
 	@ApiResponses(value = {
 			@ApiResponse(code = 201, message = "Cliente cadastrado"),
-			@ApiResponse(code = 400, message = "Requisição inválida", response = MensagemDto.class),
-			@ApiResponse(code = 409, message = "Cliente já cadastrado", response = MensagemDto.class)
+			@ApiResponse(code = 400, message = "Requisição inválida", response = ErroDto.class),
+			@ApiResponse(code = 409, message = "Cliente já cadastrado", response = ErroDto.class)
 	})
 	@PostMapping(produces = "application/json")
 	public ResponseEntity<ClienteDto> cadastrarCliente(@Valid @RequestBody ClienteCadastroDto clienteCadastroDto, UriComponentsBuilder uriBuilder) {
@@ -126,9 +116,9 @@ public class ClienteController {
 	@ApiOperation(value = "Atualiza um cliente")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Cliente atualizado"),
-			@ApiResponse(code = 400, message = "Requisição inválida", response = MensagemDto.class),
+			@ApiResponse(code = 400, message = "Requisição inválida", response = ErroDto.class),
 			@ApiResponse(code = 403, message = "Não autenticado"),
-			@ApiResponse(code = 404, message = "Cliente não encontrado", response = MensagemDto.class)
+			@ApiResponse(code = 404, message = "Cliente não encontrado", response = ErroDto.class)
 	})
 	@ResponseStatus(HttpStatus.OK)
 	@PutMapping(path = "{id}", produces = "application/json")
@@ -139,9 +129,9 @@ public class ClienteController {
 	@ApiOperation(value = "Altera a senha de um cliente")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Senha alterada"),
-			@ApiResponse(code = 400, message = "Requisição inválida", response = MensagemDto.class),
+			@ApiResponse(code = 400, message = "Requisição inválida", response = ErroDto.class),
 			@ApiResponse(code = 403, message = "Não autenticado"),
-			@ApiResponse(code = 404, message = "Cliente não encontrado", response = MensagemDto.class)
+			@ApiResponse(code = 404, message = "Cliente não encontrado", response = ErroDto.class)
 	})
 	@ResponseStatus(HttpStatus.OK)
 	@PutMapping(path = "{id}/altera-senha", produces = "application/json")

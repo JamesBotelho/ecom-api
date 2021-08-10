@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 @Data
@@ -12,10 +13,12 @@ import javax.validation.constraints.NotBlank;
 public class LoginDto {
 
     @ApiModelProperty(value = "e-mail do cliente", required = true)
-    @NotBlank
+    @Email(message = "O e-mail é inválido")
+    @NotBlank(message = "O e-mail não pode ser vazio")
     private String email;
+
     @ApiModelProperty(value = "senha", required = true)
-    @NotBlank
+    @NotBlank(message = "A senha não pode ser vazia")
     private String senha;
 
     public UsernamePasswordAuthenticationToken toUsernamePasswordAuthenticationToken() {
