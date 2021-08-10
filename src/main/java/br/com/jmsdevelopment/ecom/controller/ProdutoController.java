@@ -1,5 +1,9 @@
 package br.com.jmsdevelopment.ecom.controller;
 
+import br.com.jmsdevelopment.ecom.dto.MensagemDto;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -18,13 +22,23 @@ import lombok.AllArgsConstructor;
 public class ProdutoController {
 	
 	private final ProdutoService produtoService;
-	
+
+	@ApiOperation(value = "Lista todos os produtos")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Produtos encontrados"),
+			@ApiResponse(code = 404, message = "Não há produtos cadastrados", response = MensagemDto.class)
+	})
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping
 	public Page<ProdutoDto> todosOsProdutos(@PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
 		return produtoService.todosOsProdutos(pageable);
 	}
-	
+
+	@ApiOperation(value = "Lista um produto através do seu id")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Produto encontrado"),
+			@ApiResponse(code = 404, message = "Produto não encontrado", response = MensagemDto.class)
+	})
 	@GetMapping("{id}")
 	public ResponseEntity<ProdutoDto> produtoPorId(@PathVariable Long id) {
 		return ResponseEntity.ok(produtoService.recuperaProdutoPorId(id));
