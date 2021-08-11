@@ -37,10 +37,10 @@ public class PedidoController {
 
     @ApiOperation(value = "Insere um pedido")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Pedido criado", response = ErroDto.class),
-            @ApiResponse(code = 400, message = "Requisição inválida"),
+            @ApiResponse(code = 201, message = "Pedido criado"),
+            @ApiResponse(code = 400, message = "Requisição inválida", response = ErroDto.class),
             @ApiResponse(code = 403, message = "Não autenticado"),
-            @ApiResponse(code = 404, message = "Cliente não encontrado")
+            @ApiResponse(code = 404, message = "Cliente não encontrado", response = ErroDto.class)
     })
     @PostMapping(produces = "application/json")
     public ResponseEntity<PedidoDto> inserePedido(@Valid @RequestBody PedidoDto pedidoDto, UriComponentsBuilder uriBuilder) {

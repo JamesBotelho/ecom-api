@@ -94,7 +94,7 @@ public class ClienteController {
 			@ApiResponse(code = 403, message = "Não autenticado")
 	})
 	@ResponseStatus(HttpStatus.OK)
-	@DeleteMapping("{id}/carrinho")
+	@DeleteMapping(path = "{id}/carrinho", produces = "application/json")
 	public void deletaCarrinho(@PathVariable Long id) {
 		carrinhoService.deletaCarrinho(id);
 	}
