@@ -12,12 +12,13 @@ import javax.validation.constraints.Positive;
 @NoArgsConstructor
 @Data
 public class ItemCarrinhoDto {
-    @NotNull
-    @Positive
+    @NotNull(message = "O id do produto é obrigatório")
+    @Positive(message = "Id do produto inválido")
     @ApiModelProperty(value = "Id do produto", required = true)
     private Long idProduto;
-    @NotNull
-    @Positive
+
+    @NotNull(message = "A quantidade do produto é obrigatória")
+    @Positive(message = "A quantidade do produto é inválida")
     @ApiModelProperty(value = "Quantidade do produto", required = true)
     private Integer quantidade;
 }

@@ -1,8 +1,8 @@
 package br.com.jmsdevelopment.ecom.controller;
 
-import br.com.jmsdevelopment.ecom.dto.MensagemDto;
 import br.com.jmsdevelopment.ecom.dto.autenticacao.LoginDto;
 import br.com.jmsdevelopment.ecom.dto.autenticacao.TokenDto;
+import br.com.jmsdevelopment.ecom.dto.erros.ErroDto;
 import br.com.jmsdevelopment.ecom.service.AutenticacaoService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -24,7 +24,7 @@ public class AutenticacaoController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Usuário autenticado com sucesso"),
             @ApiResponse(code = 400, message = "Requisição inválida"),
-            @ApiResponse(code = 401, message = "Usuários ou senha inválidos", response = MensagemDto.class)
+            @ApiResponse(code = 401, message = "Usuários ou senha inválidos", response = ErroDto.class)
     })
     @PostMapping(produces = "application/json")
     @ResponseStatus(HttpStatus.OK)

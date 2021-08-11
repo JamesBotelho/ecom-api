@@ -1,6 +1,6 @@
 package br.com.jmsdevelopment.ecom.controller;
 
-import br.com.jmsdevelopment.ecom.dto.MensagemDto;
+import br.com.jmsdevelopment.ecom.dto.erros.ErroDto;
 import br.com.jmsdevelopment.ecom.dto.pedido.PedidoDto;
 import br.com.jmsdevelopment.ecom.service.PedidoService;
 import io.swagger.annotations.ApiOperation;
@@ -25,9 +25,9 @@ public class PedidoController {
     @ApiOperation(value = "Retorna um pedido através do seu id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Pedido encontrado"),
-            @ApiResponse(code = 400, message = "Requisição inválida", response = MensagemDto.class),
+            @ApiResponse(code = 400, message = "Requisição inválida", response = ErroDto.class),
             @ApiResponse(code = 403, message = "Não autenticado"),
-            @ApiResponse(code = 404, message = "Pedido ou cliente não encontrado", response = MensagemDto.class)
+            @ApiResponse(code = 404, message = "Pedido ou cliente não encontrado", response = ErroDto.class)
     })
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(path = "{id}", produces = "application/json")
@@ -37,10 +37,10 @@ public class PedidoController {
 
     @ApiOperation(value = "Insere um pedido")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Pedido criado", response = PedidoDto.class),
-            @ApiResponse(code = 400, message = "Requisição inválida"),
+            @ApiResponse(code = 201, message = "Pedido criado"),
+            @ApiResponse(code = 400, message = "Requisição inválida", response = ErroDto.class),
             @ApiResponse(code = 403, message = "Não autenticado"),
-            @ApiResponse(code = 404, message = "Cliente não encontrado")
+            @ApiResponse(code = 404, message = "Cliente não encontrado", response = ErroDto.class)
     })
     @PostMapping(produces = "application/json")
     public ResponseEntity<PedidoDto> inserePedido(@Valid @RequestBody PedidoDto pedidoDto, UriComponentsBuilder uriBuilder) {

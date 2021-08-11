@@ -1,6 +1,6 @@
 package br.com.jmsdevelopment.ecom.controller;
 
-import br.com.jmsdevelopment.ecom.dto.MensagemDto;
+import br.com.jmsdevelopment.ecom.dto.erros.ErroDto;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -26,10 +26,10 @@ public class ProdutoController {
 	@ApiOperation(value = "Lista todos os produtos")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Produtos encontrados"),
-			@ApiResponse(code = 404, message = "Não há produtos cadastrados", response = MensagemDto.class)
+			@ApiResponse(code = 404, message = "Não há produtos cadastrados", response = ErroDto.class)
 	})
 	@ResponseStatus(HttpStatus.OK)
-	@GetMapping
+	@GetMapping(produces = "application/json")
 	public Page<ProdutoDto> todosOsProdutos(@PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
 		return produtoService.todosOsProdutos(pageable);
 	}
@@ -37,9 +37,9 @@ public class ProdutoController {
 	@ApiOperation(value = "Lista um produto através do seu id")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Produto encontrado"),
-			@ApiResponse(code = 404, message = "Produto não encontrado", response = MensagemDto.class)
+			@ApiResponse(code = 404, message = "Produto não encontrado", response = ErroDto.class)
 	})
-	@GetMapping("{id}")
+	@GetMapping(path = "{id}", produces = "application/json")
 	public ResponseEntity<ProdutoDto> produtoPorId(@PathVariable Long id) {
 		return ResponseEntity.ok(produtoService.recuperaProdutoPorId(id));
 	}

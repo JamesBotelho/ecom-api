@@ -14,7 +14,7 @@ import java.util.List;
 @Data
 public class ItensCarrinhoDto {
     @Valid
-    @NotEmpty
+    @NotEmpty(message = "O carrinho deve possuir pelo menos um item")
     @ApiModelProperty(value = "Itens do carrinho a ser salvo", required = true)
     private List<ItemCarrinhoDto> itens;
 }
