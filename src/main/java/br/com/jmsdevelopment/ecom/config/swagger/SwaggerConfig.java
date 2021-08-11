@@ -59,6 +59,8 @@ public class SwaggerConfig {
                 .title("E-commerce REST API")
                 .description("Api rest que simula as principais funcionalidades de um e-commerce")
                 .version("1.0.0")
+                .license("GPL v3")
+                .licenseUrl("https://github.com/JamesBotelho/ecom-api/blob/main/license.txt")
                 .contact(new Contact("James Botelho", "https://www.jmsdevelopment.com.br/", "jms.devel@gmail.com"))
                 .build();
     }
