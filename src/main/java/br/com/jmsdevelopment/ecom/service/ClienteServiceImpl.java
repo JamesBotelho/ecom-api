@@ -10,6 +10,7 @@ import br.com.jmsdevelopment.ecom.repository.ClienteRepository;
 import br.com.jmsdevelopment.ecom.service.validacao.Validacao;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -67,10 +68,11 @@ public class ClienteServiceImpl implements ClienteService {
 	public void alterarSenha(Long id, ClienteAlteraSenhaDto clienteAlteraSenhaDto) {
 		validaIdCliente.validar(id);
 		Cliente cliente = pesquisaPorId(id);
-		if (!cliente.getSenha().equals(clienteAlteraSenhaDto.getSenhaAntiga())) {
+		BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+		if (!bCryptPasswordEncoder.matches(clienteAlteraSenhaDto.getSenhaAntiga(), cliente.getSenha())) {
 			throw new RuntimeException("A senha atual é inválida!");
 		}
-		cliente.setSenha(clienteAlteraSenhaDto.getSenhaNova());
+		cliente.setSenha(bCryptPasswordEncoder.encode(clienteAlteraSenhaDto.getSenhaNova()));
 		clienteRepository.save(cliente);
 	}
 }
