@@ -10,7 +10,6 @@ import br.com.jmsdevelopment.ecom.repository.ClienteRepository;
 import br.com.jmsdevelopment.ecom.service.validacao.Validacao;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import lombok.val;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
