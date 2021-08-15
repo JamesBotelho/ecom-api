@@ -1,0 +1,44 @@
+version: '3'
+services:
+  ecom-api:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    image: jamesbotelho/ecom-api
+    environment:
+      - "SPRING_PROFILES_ACTIVE=default"
+      - "MYSQL_HOST=ecom-api_mysql_1"
+      - "MYSQL_PORT=3306"
+      - "USER_DATABASE=root"
+      - "DB_PASSWORD=banco123host"
+      - "MONGO_HOST=ecom-api_mongodb_1"
+      - "MONGO_PORT=27017"
+      - "MONGO_DATABASE=carrinho_usuario"
+      - "TOKEN_ISSUER=ecom-api"
+      - "TOKEN_EXPIRATION=3600000"
+      - "TOKEN_SECRET=-0u39rlewakçef9q82375lka9182374"
+    container_name: ecom-api
+    ports:
+      - "8080:8080"
+    networks:
+      - network-prod
+    depends_on:
+      - "ecom-api_mongodb_1"
+      - "ecom-api_mysql_1"
+
+  mongodb:
+    image: mongo
+    networks:
+      - network-prod
+
+  mysql:
+    image: "mysql:5.7"
+    environment:
+      - "MYSQL_ROOT_PASSWORD=banco123host"
+      - "MYSQL_DATABASE=db_ecom"
+    networks:
+      - network-prod
+
+networks:
+  network-prod:
+    driver: bridge
