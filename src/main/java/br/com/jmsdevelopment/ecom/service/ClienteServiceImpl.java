@@ -67,10 +67,11 @@ public class ClienteServiceImpl implements ClienteService {
 	public void alterarSenha(Long id, ClienteAlteraSenhaDto clienteAlteraSenhaDto) {
 		validaIdCliente.validar(id);
 		Cliente cliente = pesquisaPorId(id);
-		if (!cliente.getSenha().equals(clienteAlteraSenhaDto.getSenhaAntiga())) {
+		BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+		if (!bCryptPasswordEncoder.matches(clienteAlteraSenhaDto.getSenhaAntiga(), cliente.getSenha())) {
 			throw new RuntimeException("A senha atual é inválida!");
 		}
-		cliente.setSenha(clienteAlteraSenhaDto.getSenhaNova());
+		cliente.setSenha(bCryptPasswordEncoder.encode(clienteAlteraSenhaDto.getSenhaNova()));
 		clienteRepository.save(cliente);
 	}
 }
