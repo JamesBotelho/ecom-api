@@ -2,9 +2,6 @@ name: Teste da aplicação
 
 on:
   push:
-    branches:
-      - 'feature/**'
-      - 'fix/**'
     branches-ignore:
       - 'main'
 
