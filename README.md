@@ -39,4 +39,4 @@ A aplicação possui o swagger configurado utilizando o SpringFox, que pode ser 
 
 ## Autor: James Botelho
 * [LinkedIn](https://br.linkedin.com/in/james-de-oliveira-botelho-67344914b)
-* [Gmail](jms.devel@gmail.com)
+* [Gmail]<jms.devel@gmail.com>
